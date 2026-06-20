@@ -4,631 +4,729 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="Riberastudio — Presencia digital para proyectos con identidad. Litoral, Argentina.">
-<title>Riberastudio — Presencia digital con identidad</title>
+<title>Riberastudio</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=Inter:wght@300;400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:wght@300;400&display=swap" rel="stylesheet">
+
 <style>
-
-/* ─── RESET & RAÍZ ─────────────────────────────────────────── */
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
+/* ══════════════════════════════════════════════════════════
+   TOKENS
+══════════════════════════════════════════════════════════ */
 :root {
-  --azul:    #143A5A;
-  --verde:   #4F7C74;
-  --blanco:  #FAFAF7;
-  --negro:   #171717;
-  --gris:    #717171;
-  --gris-l:  #B8B8B4;
-  --borde:   rgba(23,23,23,0.09);
-  --borde-c: rgba(250,250,247,0.13);
-  --max:     1120px;
-  --px:      clamp(1.5rem, 5vw, 5rem);
-  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --azul:   #143A5A;
+  --verde:  #4F7C74;
+  --blanco: #FAFAF7;
+  --negro:  #171717;
+  --gris:   #6E6E6A;
+  --gris-l: #B4B4B0;
+  --expo:   cubic-bezier(.16,1,.3,1);
+  --suave:  cubic-bezier(.4,0,.2,1);
 }
 
-html { scroll-behavior: smooth; font-size: 16px; }
-
+/* ══════════════════════════════════════════════════════════
+   RESET
+══════════════════════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; scroll-behavior: smooth; }
 body {
   background: var(--blanco);
   color: var(--negro);
-  font-family: 'Inter', sans-serif;
+  font-family: 'DM Sans', sans-serif;
   font-weight: 300;
-  line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
+  cursor: none; /* cursor custom */
 }
+a, button { cursor: none; }
+img, svg { display: block; }
 
-/* Grano sutil global */
-body::after {
-  content: '';
+/* ══════════════════════════════════════════════════════════
+   CURSOR CUSTOM
+══════════════════════════════════════════════════════════ */
+#cursor {
   position: fixed;
-  inset: 0;
-  pointer-events: none;
   z-index: 9999;
-  opacity: .022;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23g)'/%3E%3C/svg%3E");
-  background-size: 200px 200px;
+  pointer-events: none;
+  top: 0; left: 0;
+  mix-blend-mode: difference;
+}
+#cursor-dot {
+  width: 8px; height: 8px;
+  background: var(--blanco);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: transform .15s var(--expo), width .3s var(--expo), height .3s var(--expo);
+}
+#cursor-ring {
+  position: absolute;
+  width: 36px; height: 36px;
+  border: 1px solid rgba(250,250,247,.5);
+  border-radius: 50%;
+  top: 0; left: 0;
+  transform: translate(-50%, -50%);
+  transition: transform .45s var(--expo), width .4s var(--expo), height .4s var(--expo), opacity .3s;
+}
+body.cursor-hover #cursor-dot  { width: 48px; height: 48px; }
+body.cursor-hover #cursor-ring { opacity: 0; }
+
+/* ══════════════════════════════════════════════════════════
+   GRANO GLOBAL
+══════════════════════════════════════════════════════════ */
+#grano {
+  position: fixed; inset: 0;
+  pointer-events: none; z-index: 9998;
+  opacity: .025;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.82' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23g)'/%3E%3C/svg%3E");
+  background-size: 180px;
 }
 
-/* ─── NAV ───────────────────────────────────────────────────── */
+/* ══════════════════════════════════════════════════════════
+   NAV
+══════════════════════════════════════════════════════════ */
 .nav {
-  position: fixed;
-  top: 0; left: 0; right: 0;
-  z-index: 200;
-  padding: 1.4rem var(--px);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  transition: background .4s ease, border-color .4s ease;
-  border-bottom: 1px solid transparent;
+  position: fixed; top: 0; left: 0; right: 0;
+  z-index: 500;
+  padding: 1.5rem clamp(1.5rem,5vw,4.5rem);
+  display: flex; justify-content: space-between; align-items: center;
+  transition: background .5s var(--suave);
+  mix-blend-mode: normal;
 }
-.nav.scrolled {
-  background: rgba(250,250,247,.92);
-  backdrop-filter: blur(14px);
-  border-color: var(--borde);
+.nav::after {
+  content: '';
+  position: absolute; bottom: 0; left: 0; right: 0;
+  height: 1px;
+  background: rgba(250,250,247,.12);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform .5s var(--expo);
 }
-.nav.hero-zone { border-color: transparent; }
+.nav.sc::after { transform: scaleX(1); }
+.nav.sc {
+  background: rgba(250,250,247,.93);
+  backdrop-filter: blur(16px);
+}
+.nav.sc::after { background: rgba(23,23,23,.08); }
 
-.nav-logo svg { height: 22px; width: auto; display: block; }
-.nav-logo-hero { display: block; }
-.nav-logo-light { display: none; }
-.nav.scrolled .nav-logo-hero { display: none; }
-.nav.scrolled .nav-logo-light { display: block; }
+/* Logo en nav — siempre el SVG oficial */
+.nav-logo {
+  display: block; text-decoration: none;
+  height: 20px;
+}
+.nav-logo svg { height: 100%; width: auto; }
 
-.nav-cta {
-  font-size: .75rem;
-  letter-spacing: .12em;
+/* En hero (oscuro) → logo blanco */
+.logo-oscuro { display: block; }
+.logo-claro  { display: none; }
+.nav.sc .logo-oscuro { display: none; }
+.nav.sc .logo-claro  { display: block; }
+
+.nav-contacto {
+  font-size: .72rem;
+  letter-spacing: .18em;
   text-transform: uppercase;
-  color: var(--blanco);
+  color: rgba(250,250,247,.7);
   text-decoration: none;
-  border-bottom: 1px solid rgba(250,250,247,.4);
-  padding-bottom: 1px;
-  transition: border-color .25s, color .25s;
+  position: relative;
+  padding-bottom: 2px;
 }
-.nav.scrolled .nav-cta { color: var(--azul); border-color: var(--azul); }
-.nav-cta:hover { border-color: currentColor; }
+.nav-contacto::after {
+  content: '';
+  position: absolute; bottom: 0; left: 0; right: 0;
+  height: 1px; background: currentColor;
+  transform: scaleX(0); transform-origin: right;
+  transition: transform .35s var(--expo);
+}
+.nav-contacto:hover::after { transform: scaleX(1); transform-origin: left; }
+.nav.sc .nav-contacto { color: var(--azul); }
 
-/* ─── HERO ──────────────────────────────────────────────────── */
+/* ══════════════════════════════════════════════════════════
+   HERO  — el momento más intenso
+══════════════════════════════════════════════════════════ */
 .hero {
   min-height: 100svh;
   background: var(--azul);
   position: relative;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
   overflow: hidden;
-  padding: 0 var(--px) clamp(3.5rem, 7vw, 6rem);
+  display: flex; flex-direction: column; justify-content: flex-end;
+  padding: 0 clamp(1.5rem,5vw,4.5rem) clamp(3rem,6vw,5.5rem);
 }
 
-/* Línea del río — se dibuja onLoad */
-.rio-hero {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
+/* SVG del río — se dibuja al cargar */
+.hero-rio {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
   pointer-events: none;
 }
-.rio-hero-path {
-  stroke-dasharray: 2000;
-  stroke-dashoffset: 2000;
-  animation: dibuja-rio 1.8s var(--ease-out-expo) .3s forwards;
+.rio-path {
+  stroke-dasharray: 2400;
+  stroke-dashoffset: 2400;
 }
-@keyframes dibuja-rio {
-  to { stroke-dashoffset: 0; }
-}
+.rio-path-1 { animation: traza 2s var(--expo) .2s forwards; }
+.rio-path-2 { animation: traza 2.4s var(--expo) .4s forwards; }
+.rio-path-3 { animation: traza 2.8s var(--expo) .6s forwards; }
+@keyframes traza { to { stroke-dashoffset: 0; } }
 
-.hero-inner {
-  position: relative;
-  z-index: 2;
-  max-width: var(--max);
-  margin: 0 auto;
-  width: 100%;
-}
-
-.hero-eyebrow {
-  font-size: .7rem;
-  letter-spacing: .25em;
-  text-transform: uppercase;
-  color: var(--verde);
-  font-weight: 400;
-  margin-bottom: 2.5rem;
-  display: flex;
-  align-items: center;
-  gap: .9rem;
-  opacity: 0;
-  animation: sube .8s var(--ease-out-expo) 1.2s forwards;
-}
-.hero-eyebrow::before {
-  content: '';
-  display: block;
-  width: 28px;
-  height: 1px;
-  background: var(--verde);
-  flex-shrink: 0;
-}
-
+/* Tipografía hero — ENORME, sangra por los bordes */
 .hero-titulo {
+  position: relative; z-index: 2;
   font-family: 'Cormorant Garamond', serif;
   font-weight: 300;
-  font-size: clamp(3.8rem, 8.5vw, 8.5rem);
-  line-height: 1;
-  letter-spacing: -.025em;
+  font-size: clamp(5rem, 13vw, 13rem);
+  line-height: .92;
+  letter-spacing: -.03em;
   color: var(--blanco);
-  margin-bottom: 3rem;
   overflow: hidden;
+  /* La primera línea sangra levemente a la derecha */
 }
-
-/* Cada línea del título aparece desde abajo */
-.hero-titulo .linea {
+.hero-titulo .hl {
   display: block;
   overflow: hidden;
+  /* Línea 2: desplazada a la derecha — asimetría */
 }
-.hero-titulo .linea span {
+.hero-titulo .hl:nth-child(2) {
+  padding-left: clamp(3rem, 8vw, 10rem);
+}
+.hero-titulo .hl:nth-child(3) {
+  padding-left: clamp(1rem, 3vw, 4rem);
+}
+.hero-titulo .hl span {
   display: block;
-  transform: translateY(110%);
-  animation: sube-linea .9s var(--ease-out-expo) forwards;
+  transform: translateY(105%);
+  animation: emerge 1s var(--expo) forwards;
 }
-.hero-titulo .linea:nth-child(1) span { animation-delay: .5s; }
-.hero-titulo .linea:nth-child(2) span { animation-delay: .65s; }
-.hero-titulo .linea:nth-child(3) span { animation-delay: .8s; }
-.hero-titulo em {
-  font-style: italic;
-  color: rgba(250,250,247,.45);
-}
+.hero-titulo .hl:nth-child(1) span { animation-delay: .7s; }
+.hero-titulo .hl:nth-child(2) span { animation-delay: .85s; }
+.hero-titulo .hl:nth-child(3) span { animation-delay: 1s; }
+.hero-titulo em { font-style: italic; color: var(--verde); }
 
-@keyframes sube-linea {
+@keyframes emerge {
   to { transform: translateY(0); }
-}
-@keyframes sube {
-  from { opacity: 0; transform: translateY(12px); }
-  to   { opacity: 1; transform: translateY(0); }
 }
 
 .hero-meta {
+  position: relative; z-index: 2;
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
-  padding-top: 2rem;
-  border-top: 1px solid var(--borde-c);
+  margin-top: 2.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(250,250,247,.15);
   opacity: 0;
-  animation: sube .8s var(--ease-out-expo) 1.4s forwards;
+  animation: aparece .9s var(--expo) 1.4s forwards;
 }
-.hero-sub {
-  font-size: clamp(.82rem, 1.2vw, .92rem);
-  color: rgba(250,250,247,.5);
-  max-width: 320px;
+@keyframes aparece {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: none; }
+}
+.hero-desc {
+  font-size: clamp(.8rem, 1.1vw, .92rem);
+  color: rgba(250,250,247,.45);
+  max-width: 280px;
   line-height: 1.75;
+  letter-spacing: .01em;
 }
-.hero-link {
-  font-size: .78rem;
-  letter-spacing: .12em;
-  text-transform: uppercase;
-  color: var(--blanco);
-  text-decoration: none;
-  display: flex;
-  align-items: center;
-  gap: .75rem;
-  flex-shrink: 0;
-  transition: gap .3s var(--ease-out-expo);
-}
-.hero-link:hover { gap: 1.2rem; }
-.hero-link-bar {
-  display: block;
-  width: 36px;
-  height: 1px;
-  background: var(--blanco);
-  transition: width .3s var(--ease-out-expo);
-}
-.hero-link:hover .hero-link-bar { width: 56px; }
-
-/* Paralax leve en el título del hero */
-.hero-parallax { will-change: transform; }
-
-/* ─── RÍO LATERAL — hilo que conecta secciones ─────────────── */
-.rio-lateral {
-  position: absolute;
-  left: clamp(1rem, 2.5vw, 2.5rem);
-  top: 0; bottom: 0;
-  width: 1px;
-  pointer-events: none;
-  overflow: visible;
-}
-.rio-lateral svg {
-  position: absolute;
-  left: 0; top: 0;
-  width: 60px;
-  height: 100%;
-  overflow: visible;
-}
-.rio-lateral-path {
-  stroke-dasharray: 3000;
-  stroke-dashoffset: 3000;
-  transition: stroke-dashoffset 0s;
-}
-.rio-lateral-path.animating {
-  transition: stroke-dashoffset 2.5s cubic-bezier(.4,0,.2,1);
-  stroke-dashoffset: 0;
-}
-
-/* ─── SECCIONES BASE ────────────────────────────────────────── */
-.seccion {
-  position: relative;
-  padding: clamp(5rem, 10vw, 9rem) var(--px);
-}
-.seccion-inner {
-  max-width: var(--max);
-  margin: 0 auto;
-}
-
-/* ─── FADE-IN AL SCROLL ─────────────────────────────────────── */
-.fi {
-  opacity: 0;
-  transform: translateY(24px);
-  transition: opacity .9s var(--ease-out-expo), transform .9s var(--ease-out-expo);
-}
-.fi.v { opacity: 1; transform: none; }
-.fi-d1 { transition-delay: .1s; }
-.fi-d2 { transition-delay: .2s; }
-.fi-d3 { transition-delay: .3s; }
-
-/* ─── PROPUESTA ─────────────────────────────────────────────── */
-.propuesta {
-  background: var(--blanco);
-  padding-left: calc(var(--px) + 3rem);
-}
-.propuesta-label {
+.hero-eyebrow {
   font-size: .68rem;
   letter-spacing: .22em;
   text-transform: uppercase;
   color: var(--verde);
   font-weight: 400;
-  margin-bottom: 3rem;
-  display: flex;
-  align-items: center;
-  gap: .75rem;
-}
-.propuesta-label::before {
-  content: '';
-  display: block;
-  width: 20px;
-  height: 1px;
-  background: var(--verde);
-}
-.propuesta-p1 {
-  font-family: 'Cormorant Garamond', serif;
-  font-weight: 300;
-  font-size: clamp(1.6rem, 3vw, 2.4rem);
-  line-height: 1.38;
-  color: var(--negro);
-  max-width: 700px;
-  margin-bottom: 2.5rem;
-}
-.propuesta-p2 {
-  font-size: clamp(.88rem, 1.2vw, .98rem);
-  color: var(--gris);
-  max-width: 520px;
-  line-height: 1.8;
-  border-left: 1px solid var(--verde);
-  padding-left: 1.5rem;
+  text-align: right;
 }
 
-/* ─── SERVICIOS ─────────────────────────────────────────────── */
-.servicios { background: var(--blanco); }
+/* ══════════════════════════════════════════════════════════
+   TRANSICIÓN HERO→CONTENIDO
+   La sección siguiente "invade" el hero
+══════════════════════════════════════════════════════════ */
+.manifesto {
+  position: relative;
+  z-index: 10;
+  margin-top: -8vw;
+  background: var(--blanco);
+  clip-path: polygon(0 8vw, 100% 0, 100% 100%, 0 100%);
+  padding: calc(8vw + clamp(4rem,8vw,8rem)) clamp(1.5rem,5vw,4.5rem) clamp(5rem,9vw,9rem);
+}
+
+.manifesto-inner {
+  max-width: 1120px; margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1.6fr;
+  gap: clamp(3rem,6vw,8rem);
+  align-items: start;
+}
+.manifesto-lateral {
+  position: sticky; top: 8rem;
+}
+.manifesto-etiqueta {
+  font-size: .65rem;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: var(--verde);
+  font-weight: 400;
+  margin-bottom: 1.5rem;
+  display: flex; align-items: center; gap: .6rem;
+}
+.manifesto-etiqueta::before {
+  content: '';
+  width: 20px; height: 1px;
+  background: var(--verde);
+  display: block;
+}
+.manifesto-claim {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 300;
+  font-size: clamp(1.4rem, 2.5vw, 2rem);
+  line-height: 1.3;
+  color: var(--negro);
+}
+.manifesto-claim em {
+  font-style: italic;
+  color: var(--gris);
+}
+
+.manifesto-texto p {
+  font-size: clamp(.9rem, 1.2vw, 1rem);
+  color: var(--gris);
+  line-height: 1.85;
+  margin-bottom: 1.75rem;
+}
+.manifesto-texto p:last-child { margin-bottom: 0; }
+.manifesto-texto strong {
+  color: var(--negro);
+  font-weight: 400;
+}
+
+/* ══════════════════════════════════════════════════════════
+   SERVICIOS — composición tipográfica, no grid
+══════════════════════════════════════════════════════════ */
+.servicios {
+  background: var(--negro);
+  padding: clamp(5rem,10vw,10rem) clamp(1.5rem,5vw,4.5rem);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Número enorme decorativo de fondo */
+.srv-bg-num {
+  position: absolute;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 40vw;
+  font-weight: 300;
+  color: rgba(250,250,247,.02);
+  line-height: 1;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  user-select: none;
+  letter-spacing: -.05em;
+  transition: opacity .5s;
+}
+
+.srv-inner { max-width: 1120px; margin: 0 auto; }
 
 .srv-header {
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
-  margin-bottom: 0;
-  padding-bottom: 1.5rem;
-  border-bottom: 1.5px solid var(--negro);
+  margin-bottom: clamp(3rem,6vw,6rem);
 }
 .srv-label {
-  font-size: .68rem;
+  font-size: .65rem;
   letter-spacing: .22em;
   text-transform: uppercase;
-  color: var(--gris);
+  color: var(--verde);
   font-weight: 400;
 }
-.srv-nota {
-  font-size: .8rem;
-  color: var(--gris-l);
+.srv-intro {
+  font-size: .85rem;
+  color: rgba(250,250,247,.3);
   text-align: right;
-  max-width: 280px;
-  line-height: 1.6;
+  max-width: 220px;
+  line-height: 1.65;
 }
 
+/* Cada servicio: tipografía ENORME + descripción pequeña asimétrica */
 .srv-lista { list-style: none; }
 
 .srv-item {
-  border-bottom: 1px solid var(--borde);
-  padding: 1.6rem 0;
-  display: grid;
-  grid-template-columns: 2.5rem 1fr auto;
-  align-items: baseline;
-  gap: 1.5rem;
-  cursor: default;
-  transition: background .2s;
   position: relative;
+  padding: clamp(2rem,4vw,3.5rem) 0;
+  border-top: 1px solid rgba(250,250,247,.07);
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: end;
+  gap: 2rem;
   overflow: hidden;
 }
-.srv-item::after {
+.srv-item:last-child { border-bottom: 1px solid rgba(250,250,247,.07); }
+
+/* Línea de reveal al hover */
+.srv-item::before {
   content: '';
   position: absolute;
-  left: 0; bottom: 0;
+  left: 0; bottom: 0; right: 0;
   height: 1px;
-  width: 0;
   background: var(--verde);
-  transition: width .5s var(--ease-out-expo);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform .6s var(--expo);
 }
-.srv-item:hover::after { width: 100%; }
+.srv-item:hover::before { transform: scaleX(1); }
 
-.srv-n {
-  font-size: .68rem;
-  color: var(--verde);
-  letter-spacing: .1em;
-  font-weight: 400;
-}
 .srv-nombre {
   font-family: 'Cormorant Garamond', serif;
-  font-weight: 400;
-  font-size: clamp(1.3rem, 2.2vw, 1.75rem);
-  color: var(--negro);
-  transition: color .25s;
+  font-weight: 300;
+  font-size: clamp(3rem, 7vw, 6.5rem);
+  line-height: .95;
+  letter-spacing: -.025em;
+  color: var(--blanco);
+  transition: color .35s var(--suave), transform .5s var(--expo);
+  display: block;
+  transform-origin: left;
 }
-.srv-item:hover .srv-nombre { color: var(--azul); }
-.srv-desc {
-  font-size: .8rem;
-  color: var(--gris);
-  text-align: right;
-  max-width: 240px;
-  line-height: 1.6;
-}
-.srv-detalle {
-  margin-top: 2.5rem;
-  font-size: .78rem;
-  color: var(--gris-l);
-  line-height: 1.8;
-  max-width: 560px;
-  padding-top: 1.5rem;
-  border-top: 1px solid var(--borde);
-}
-.srv-detalle strong {
+.srv-item:hover .srv-nombre {
   color: var(--verde);
-  font-weight: 400;
+  transform: translateX(1.5rem);
 }
 
-/* ─── PROCESO ───────────────────────────────────────────────── */
-.proceso { background: var(--blanco); }
-
-.proc-header {
-  margin-bottom: 4rem;
+.srv-meta {
+  text-align: right;
+  padding-bottom: .6rem;
+  flex-shrink: 0;
 }
-.proc-label {
-  font-size: .68rem;
-  letter-spacing: .22em;
-  text-transform: uppercase;
-  color: var(--gris);
-  font-weight: 400;
+.srv-num {
+  font-size: .65rem;
+  color: var(--verde);
+  letter-spacing: .15em;
+  display: block;
   margin-bottom: .5rem;
 }
-.proc-intro {
-  font-family: 'Cormorant Garamond', serif;
-  font-weight: 300;
-  font-style: italic;
-  font-size: clamp(1.2rem, 2vw, 1.6rem);
-  color: var(--gris);
+.srv-desc {
+  font-size: .78rem;
+  color: rgba(250,250,247,.3);
+  max-width: 180px;
+  line-height: 1.6;
+  margin-left: auto;
 }
 
-.proc-lista { list-style: none; border-top: 1px solid var(--borde); }
-.proc-item {
-  border-bottom: 1px solid var(--borde);
-  padding: 2rem 0;
-  display: grid;
-  grid-template-columns: 2rem 1fr 1fr;
-  gap: 2rem;
-  align-items: start;
+.srv-detalle {
+  margin-top: 3rem;
+  padding-top: 2rem;
+  border-top: 1px solid rgba(250,250,247,.07);
+  font-size: .78rem;
+  color: rgba(250,250,247,.25);
+  line-height: 1.85;
+  max-width: 500px;
 }
-.proc-n {
+.srv-detalle b {
+  color: var(--verde);
+  font-weight: 400;
+}
+
+/* ══════════════════════════════════════════════════════════
+   PROCESO — horizontal scroll en desktop
+══════════════════════════════════════════════════════════ */
+.proceso {
+  background: var(--blanco);
+  padding: clamp(5rem,10vw,10rem) 0;
+  overflow: hidden;
+}
+.proceso-header {
+  padding: 0 clamp(1.5rem,5vw,4.5rem);
+  max-width: 1120px; margin: 0 auto;
+  margin-bottom: clamp(3rem,5vw,5rem);
+  display: flex; justify-content: space-between; align-items: flex-end;
+}
+.proceso-label {
+  font-size: .65rem;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: var(--gris-l);
+}
+.proceso-claim {
   font-family: 'Cormorant Garamond', serif;
   font-style: italic;
-  font-size: 1.1rem;
-  color: var(--verde);
-  line-height: 1;
-  padding-top: .15rem;
+  font-weight: 300;
+  font-size: clamp(1rem,1.5vw,1.3rem);
+  color: var(--gris);
+  text-align: right;
 }
-.proc-titulo {
+
+/* Track horizontal */
+.proceso-track {
+  display: flex;
+  padding: 0 clamp(1.5rem,5vw,4.5rem);
+  gap: clamp(2rem,4vw,4rem);
+  /* En desktop: no scroll, se distribuyen. En mobile: scroll horizontal */
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+.proceso-track::-webkit-scrollbar { display: none; }
+
+.paso {
+  flex: 0 0 clamp(240px, 25vw, 320px);
+  padding-top: 2rem;
+  border-top: 1px solid var(--negro);
+  position: relative;
+}
+.paso::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  height: 2px;
+  background: var(--verde);
+  width: 0;
+  transition: width .8s var(--expo);
+}
+.paso.v::before { width: 40%; }
+
+.paso-n {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: .95rem;
+  color: var(--verde);
+  margin-bottom: 2rem;
+  display: block;
+}
+.paso-titulo {
   font-family: 'Cormorant Garamond', serif;
   font-weight: 400;
-  font-size: clamp(1.1rem, 1.6vw, 1.35rem);
+  font-size: clamp(1.3rem,2vw,1.6rem);
   color: var(--negro);
-  line-height: 1.2;
+  margin-bottom: .85rem;
+  line-height: 1.15;
 }
-.proc-desc {
-  font-size: .83rem;
+.paso-desc {
+  font-size: .82rem;
   color: var(--gris);
-  line-height: 1.75;
+  line-height: 1.8;
 }
 
-/* ─── FAQ ───────────────────────────────────────────────────── */
-.faq { background: var(--azul); padding: clamp(5rem, 10vw, 9rem) var(--px); }
-.faq-inner { max-width: var(--max); margin: 0 auto; }
-
+/* ══════════════════════════════════════════════════════════
+   FAQ
+══════════════════════════════════════════════════════════ */
+.faq {
+  background: var(--blanco);
+  padding: clamp(4rem,8vw,8rem) clamp(1.5rem,5vw,4.5rem);
+  border-top: 1px solid rgba(23,23,23,.07);
+}
+.faq-inner { max-width: 1120px; margin: 0 auto; }
+.faq-header {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 4rem;
+  margin-bottom: 4rem;
+  align-items: end;
+}
 .faq-label {
-  font-size: .68rem;
+  font-size: .65rem;
   letter-spacing: .22em;
   text-transform: uppercase;
   color: var(--verde);
   font-weight: 400;
-  margin-bottom: 3.5rem;
+}
+.faq-claim {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 300;
+  font-size: clamp(1.3rem,2vw,1.75rem);
+  color: var(--gris);
+  line-height: 1.4;
 }
 
-.faq-lista { list-style: none; border-top: 1px solid var(--borde-c); }
-.faq-item { border-bottom: 1px solid var(--borde-c); }
+.faq-lista { list-style: none; }
+.faq-item { border-bottom: 1px solid rgba(23,23,23,.08); }
 .faq-btn {
-  width: 100%;
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 1.75rem 0;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 2rem;
-  text-align: left;
+  width: 100%; background: none; border: none;
+  padding: 1.6rem 0;
+  display: flex; justify-content: space-between; align-items: center; gap: 2rem;
+  text-align: left; cursor: none;
 }
 .faq-q {
   font-family: 'Cormorant Garamond', serif;
   font-weight: 400;
-  font-size: clamp(1rem, 1.6vw, 1.25rem);
-  color: var(--blanco);
+  font-size: clamp(1rem,1.5vw,1.2rem);
+  color: var(--negro);
   line-height: 1.3;
 }
-.faq-icono {
-  width: 20px;
-  height: 20px;
-  flex-shrink: 0;
-  position: relative;
+.faq-plus {
+  width: 22px; height: 22px;
+  flex-shrink: 0; position: relative;
 }
-.faq-icono::before,
-.faq-icono::after {
+.faq-plus::before,
+.faq-plus::after {
   content: '';
   position: absolute;
   background: var(--verde);
-  border-radius: 2px;
-  transition: transform .35s var(--ease-out-expo), opacity .25s;
+  transition: transform .4s var(--expo), opacity .3s;
 }
-.faq-icono::before { width: 100%; height: 1px; top: 50%; left: 0; transform: translateY(-50%); }
-.faq-icono::after  { width: 1px; height: 100%; left: 50%; top: 0; transform: translateX(-50%); }
-.faq-item.open .faq-icono::after { transform: translateX(-50%) rotate(90deg); opacity: 0; }
+.faq-plus::before { width: 100%; height: 1px; top: 50%; transform: translateY(-50%); }
+.faq-plus::after  { width: 1px; height: 100%; left: 50%; transform: translateX(-50%); }
+.faq-item.open .faq-plus::after { transform: translateX(-50%) rotate(90deg); opacity: 0; }
 
-.faq-resp {
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height .5s var(--ease-out-expo);
+.faq-resp { max-height: 0; overflow: hidden; transition: max-height .55s var(--expo); }
+.faq-resp-p {
+  padding-bottom: 1.6rem;
+  font-size: .875rem; color: var(--gris); line-height: 1.82;
+  max-width: 620px;
 }
-.faq-resp-inner {
-  padding-bottom: 1.75rem;
-  font-size: .875rem;
-  color: rgba(250,250,247,.5);
-  line-height: 1.8;
-  max-width: 580px;
-}
-.faq-item.open .faq-resp { max-height: 300px; }
+.faq-item.open .faq-resp { max-height: 250px; }
 
-/* ─── CONTACTO ──────────────────────────────────────────────── */
+/* ══════════════════════════════════════════════════════════
+   CONTACTO — cierra con el azul del hero
+══════════════════════════════════════════════════════════ */
 .contacto {
   background: var(--azul);
-  padding: clamp(6rem, 12vw, 11rem) var(--px);
+  padding: clamp(6rem,12vw,12rem) clamp(1.5rem,5vw,4.5rem);
   position: relative;
   overflow: hidden;
 }
-.contacto-inner {
-  max-width: var(--max);
-  margin: 0 auto;
-  position: relative;
-  z-index: 2;
-}
 
-/* El río desemboca aquí */
-.rio-desemboca {
+/* El río desemboca aquí — curvas que llenan el fondo */
+.contacto-rio {
   position: absolute;
-  bottom: 0; left: 0; right: 0;
-  width: 100%;
-  height: 100%;
+  inset: 0; width: 100%; height: 100%;
   pointer-events: none;
-  opacity: .18;
 }
 
-.contacto-label {
-  font-size: .68rem;
-  letter-spacing: .22em;
-  text-transform: uppercase;
-  color: var(--verde);
-  font-weight: 400;
-  margin-bottom: 2.5rem;
+.contacto-inner {
+  max-width: 1120px; margin: 0 auto;
+  position: relative; z-index: 2;
 }
+
+/* Titular enorme que sangra */
 .contacto-titulo {
   font-family: 'Cormorant Garamond', serif;
   font-weight: 300;
-  font-size: clamp(3rem, 7vw, 7rem);
-  line-height: 1.02;
-  letter-spacing: -.02em;
+  font-size: clamp(4rem, 11vw, 11rem);
+  line-height: .9;
+  letter-spacing: -.03em;
   color: var(--blanco);
-  margin-bottom: 3rem;
+  margin-bottom: clamp(3rem,6vw,6rem);
 }
 .contacto-titulo em {
   font-style: italic;
-  color: rgba(250,250,247,.4);
+  color: rgba(250,250,247,.35);
+  display: block;
+  padding-left: clamp(2rem,8vw,10rem);
 }
 
-.contacto-links {
+.contacto-fila {
   display: flex;
-  flex-direction: column;
-  gap: 1rem;
+  justify-content: space-between;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid rgba(250,250,247,.12);
 }
 .contacto-email {
   font-family: 'Cormorant Garamond', serif;
   font-weight: 300;
-  font-size: clamp(1.2rem, 2.2vw, 1.8rem);
+  font-size: clamp(1rem,2.2vw,1.75rem);
   color: var(--blanco);
   text-decoration: none;
-  border-bottom: 1px solid rgba(250,250,247,.2);
-  padding-bottom: .3rem;
-  display: inline-flex;
-  align-items: center;
-  gap: .75rem;
-  transition: border-color .25s, gap .3s var(--ease-out-expo);
+  display: flex; align-items: center; gap: .75rem;
+  position: relative;
 }
-.contacto-email:hover { border-color: var(--blanco); gap: 1.2rem; }
+.contacto-email::after {
+  content: '';
+  position: absolute;
+  bottom: -2px; left: 0; right: 0;
+  height: 1px;
+  background: rgba(250,250,247,.3);
+  transform: scaleX(1);
+  transform-origin: left;
+  transition: background .3s;
+}
+.contacto-email:hover::after { background: var(--verde); }
+.contacto-email-flecha {
+  font-size: 1.2em;
+  transition: transform .35s var(--expo);
+}
+.contacto-email:hover .contacto-email-flecha { transform: translate(4px,-4px); }
+
+.contacto-social {
+  text-align: right;
+}
 .contacto-ig {
-  font-size: .8rem;
-  letter-spacing: .1em;
-  color: rgba(250,250,247,.4);
+  font-size: .75rem;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  color: rgba(250,250,247,.35);
   text-decoration: none;
+  display: block;
+  margin-bottom: .3rem;
   transition: color .25s;
 }
-.contacto-ig:hover { color: rgba(250,250,247,.75); }
+.contacto-ig:hover { color: var(--verde); }
 .contacto-nota {
-  margin-top: 3rem;
-  font-size: .75rem;
-  color: rgba(250,250,247,.25);
-  letter-spacing: .08em;
+  font-size: .68rem;
+  color: rgba(250,250,247,.2);
+  letter-spacing: .1em;
   text-transform: uppercase;
 }
 
-/* ─── FOOTER ────────────────────────────────────────────────── */
+/* ══════════════════════════════════════════════════════════
+   FOOTER
+══════════════════════════════════════════════════════════ */
 footer {
   background: var(--negro);
-  padding: 2rem var(--px);
-  border-top: 1px solid rgba(250,250,247,.06);
+  padding: 1.75rem clamp(1.5rem,5vw,4.5rem);
 }
 .footer-inner {
-  max-width: var(--max);
-  margin: 0 auto;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 1rem;
+  max-width: 1120px; margin: 0 auto;
+  display: flex; justify-content: space-between; align-items: center;
+  flex-wrap: wrap; gap: 1rem;
 }
-.footer-logo svg { height: 18px; width: auto; opacity: .5; }
-.footer-copy {
-  font-size: .72rem;
-  color: rgba(250,250,247,.2);
-  letter-spacing: .05em;
+.footer-logo svg { height: 16px; width: auto; opacity: .4; }
+.footer-copy { font-size: .68rem; color: rgba(250,250,247,.18); letter-spacing: .06em; }
+
+/* ══════════════════════════════════════════════════════════
+   REVEAL — máscara de texto
+══════════════════════════════════════════════════════════ */
+.reveal-wrap { overflow: hidden; }
+.reveal-inner {
+  transform: translateY(100%);
+  transition: transform .95s var(--expo);
+}
+.reveal-wrap.v .reveal-inner { transform: translateY(0); }
+
+/* Fade stagger genérico */
+.fi {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity .85s var(--expo), transform .85s var(--expo);
+}
+.fi.v { opacity: 1; transform: none; }
+.d1 { transition-delay: .1s; }
+.d2 { transition-delay: .2s; }
+.d3 { transition-delay: .32s; }
+.d4 { transition-delay: .44s; }
+
+/* ══════════════════════════════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════════════════════════════ */
+@media (max-width: 860px) {
+  body { cursor: auto; }
+  #cursor { display: none; }
+  a, button { cursor: pointer; }
+  .manifesto-inner { grid-template-columns: 1fr; gap: 2.5rem; }
+  .manifesto-lateral { position: static; }
+  .srv-item { grid-template-columns: 1fr; }
+  .srv-meta { text-align: left; }
+  .srv-desc { margin-left: 0; }
+  .faq-header { grid-template-columns: 1fr; gap: 1.5rem; }
+  .proceso-track { padding-right: clamp(1.5rem,5vw,4.5rem); }
+  .hero-titulo .hl:nth-child(2) { padding-left: clamp(1.5rem,5vw,4rem); }
+  .hero-titulo .hl:nth-child(3) { padding-left: 0; }
 }
 
-/* ─── RESPONSIVE ────────────────────────────────────────────── */
-@media (max-width: 768px) {
-  .propuesta { padding-left: var(--px); }
-  .srv-item { grid-template-columns: 2rem 1fr; }
-  .srv-desc { display: none; }
-  .proc-item { grid-template-columns: 1.5rem 1fr; }
-  .proc-desc { grid-column: 2; }
-  .hero-meta { flex-direction: column; align-items: flex-start; gap: 1.5rem; }
-  .rio-lateral { display: none; }
+@media (max-width: 480px) {
+  .manifesto { clip-path: polygon(0 5vw, 100% 0, 100% 100%, 0 100%); }
+  .contacto-titulo { font-size: clamp(3rem,13vw,5rem); }
+  .contacto-titulo em { padding-left: 1.5rem; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -637,359 +735,432 @@ footer {
     transition-duration: .01ms !important;
   }
 }
-
 </style>
 </head>
 <body>
 
-<!-- ═══ NAV ════════════════════════════════════════════════════ -->
-<nav class="nav hero-zone" id="nav" role="banner">
+<!-- CURSOR -->
+<div id="cursor" aria-hidden="true">
+  <div id="cursor-dot"></div>
+  <div id="cursor-ring"></div>
+</div>
+
+<!-- GRANO -->
+<div id="grano" aria-hidden="true"></div>
+
+<!-- ═══════════════════════════════════════════════════════
+     NAV
+════════════════════════════════════════════════════════ -->
+<nav class="nav" id="nav" role="banner">
   <a href="#" class="nav-logo" aria-label="Riberastudio — inicio">
-
-    <!-- Logo claro para hero oscuro -->
-    <svg class="nav-logo-hero" viewBox="0 0 884 163" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-      <text font-family="Georgia,'Times New Roman',serif" font-weight="700" font-size="149" fill="#FAFAF7" x="0" y="128">Ribera</text>
-      <text font-family="Georgia,'Times New Roman',serif" font-weight="400" font-style="italic" font-size="149" fill="#FAFAF7" x="477" y="128">studio</text>
+    <!-- Logo claro sobre hero oscuro -->
+    <svg class="logo-oscuro" viewBox="0 0 883.8 163.18" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <text font-family="Georgia,'Times New Roman',serif"
+            font-weight="700" font-size="148.61"
+            fill="#FAFAF7" x="0" y="127.66">Ribera</text>
+      <text font-family="Georgia,'Times New Roman',serif"
+            font-weight="400" font-style="italic" font-size="148.61"
+            fill="#FAFAF7" x="477.34" y="127.66">studio</text>
     </svg>
-
-    <!-- Logo azul para fondo claro -->
-    <svg class="nav-logo-light" viewBox="0 0 884 163" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-      <text font-family="Georgia,'Times New Roman',serif" font-weight="700" font-size="149" fill="#143A5A" x="0" y="128">Ribera</text>
-      <text font-family="Georgia,'Times New Roman',serif" font-weight="400" font-style="italic" font-size="149" fill="#143A5A" x="477" y="128">studio</text>
+    <!-- Logo azul sobre fondo claro -->
+    <svg class="logo-claro" viewBox="0 0 883.8 163.18" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <text font-family="Georgia,'Times New Roman',serif"
+            font-weight="700" font-size="148.61"
+            fill="#143A5A" x="0" y="127.66">Ribera</text>
+      <text font-family="Georgia,'Times New Roman',serif"
+            font-weight="400" font-style="italic" font-size="148.61"
+            fill="#143A5A" x="477.34" y="127.66">studio</text>
     </svg>
-
   </a>
-  <a href="#contacto" class="nav-cta">Hablemos →</a>
+  <a href="#contacto" class="nav-contacto">Hablemos →</a>
 </nav>
 
 <main>
 
-<!-- ═══ HERO ═══════════════════════════════════════════════════ -->
-<section class="hero" aria-labelledby="hero-h1" id="hero">
+<!-- ═══════════════════════════════════════════════════════
+     HERO
+════════════════════════════════════════════════════════ -->
+<section class="hero" id="hero" aria-labelledby="hero-h1">
 
-  <!-- Línea del río que se dibuja al cargar -->
-  <svg class="rio-hero" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice"
+  <!-- Río SVG animado -->
+  <svg class="hero-rio" viewBox="0 0 1440 900"
+       preserveAspectRatio="xMidYMid slice"
        xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-    <path class="rio-hero-path"
-      d="M -100 580
-         C 200 560, 350 610, 520 570
-         C 700 530, 860 590, 1060 555
-         C 1260 520, 1380 560, 1540 545"
-      stroke="#4F7C74" stroke-width="1.2" fill="none" opacity=".55"/>
-    <path class="rio-hero-path"
-      d="M -100 610
-         C 180 590, 340 645, 510 605
-         C 690 565, 860 620, 1060 588
-         C 1260 556, 1380 590, 1540 578"
-      stroke="#4F7C74" stroke-width=".7" fill="none" opacity=".3"
-      style="animation-delay: .15s"/>
-    <path class="rio-hero-path"
-      d="M -100 550
-         C 220 528, 380 578, 550 538
-         C 720 498, 880 558, 1080 524
-         C 1280 490, 1400 530, 1540 516"
-      stroke="#4F7C74" stroke-width=".5" fill="none" opacity=".2"
-      style="animation-delay: .3s"/>
+    <!-- Curva principal — más gruesa, más baja -->
+    <path class="rio-path rio-path-1"
+      d="M -200 720 C 100 695 280 740 480 710 C 680 680 860 725 1060 698 C 1260 671 1380 705 1640 690"
+      stroke="#4F7C74" stroke-width="1.5" fill="none" opacity=".5"/>
+    <!-- Curva secundaria -->
+    <path class="rio-path rio-path-2"
+      d="M -200 690 C 150 662 330 710 530 678 C 730 646 910 694 1110 665 C 1310 636 1420 668 1640 655"
+      stroke="#4F7C74" stroke-width=".8" fill="none" opacity=".28"/>
+    <!-- Curva terciaria — más arriba, más tenue -->
+    <path class="rio-path rio-path-3"
+      d="M -200 650 C 200 620 400 668 600 635 C 800 602 1000 648 1200 618 C 1380 590 1450 620 1640 608"
+      stroke="#4F7C74" stroke-width=".5" fill="none" opacity=".15"/>
+    <!-- Reflejos -->
+    <path class="rio-path rio-path-2"
+      d="M -200 740 C 80 718 260 755 460 730 C 660 705 840 740 1040 718 C 1240 696 1390 722 1640 710"
+      stroke="#FAFAF7" stroke-width=".4" fill="none" opacity=".06"/>
   </svg>
 
-  <div class="hero-inner hero-parallax" id="heroParallax">
-    <p class="hero-eyebrow" aria-label="Estudio de presencia digital, Litoral Argentina">
-      Estudio de presencia digital · Litoral, Argentina
+  <!-- Títular enorme con reveal por línea -->
+  <h1 class="hero-titulo" id="hero-h1">
+    <span class="hl"><span>Presencia</span></span>
+    <span class="hl"><span>digital con</span></span>
+    <span class="hl"><span><em>identidad.</em></span></span>
+  </h1>
+
+  <div class="hero-meta">
+    <p class="hero-desc">
+      Diseñamos y desarrollamos sitios web para profesionales,
+      emprendedores y proyectos que saben quiénes son.
     </p>
+    <p class="hero-eyebrow">
+      Estudio · Litoral, Argentina
+    </p>
+  </div>
 
-    <h1 class="hero-titulo" id="hero-h1">
-      <span class="linea"><span>Presencia digital</span></span>
-      <span class="linea"><span>para proyectos</span></span>
-      <span class="linea"><span>con <em>identidad.</em></span></span>
-    </h1>
+</section>
 
-    <div class="hero-meta">
-      <p class="hero-sub">
-        Diseñamos y desarrollamos sitios web para profesionales
-        y emprendedores que saben quiénes son.
+<!-- ═══════════════════════════════════════════════════════
+     MANIFESTO — invade el hero con clip-path
+════════════════════════════════════════════════════════ -->
+<section class="manifesto" aria-label="El estudio">
+  <div class="manifesto-inner">
+
+    <div class="manifesto-lateral fi">
+      <p class="manifesto-etiqueta">El estudio</p>
+      <p class="manifesto-claim">
+        Hacemos pocas cosas.<br>
+        <em>Las hacemos muy bien.</em>
       </p>
-      <a href="#contacto" class="hero-link" aria-label="Hablemos de tu proyecto">
-        <span class="hero-link-bar" aria-hidden="true"></span>
-        Hablemos de tu proyecto
-      </a>
     </div>
-  </div>
 
+    <div class="manifesto-texto fi d2">
+      <p>
+        <strong>No trabajamos con plantillas ni con fórmulas.</strong>
+        Cada proyecto empieza por entender quién sos y qué necesitás decir.
+        El resultado es una presencia digital que se reconoce, genera confianza
+        y tiene sentido con el resto de lo que hacés.
+      </p>
+      <p>
+        Riberastudio nació del litoral argentino con una convicción simple:
+        la presencia digital de un proyecto tiene que ser tan cuidada como
+        el proyecto mismo. Usamos tecnología con criterio, no como un fin en sí mismo.
+      </p>
+      <p>
+        Trabajamos con un número acotado de proyectos a la vez.
+        Eso nos permite estar presentes en cada decisión,
+        desde el primer párrafo hasta el último píxel.
+      </p>
+    </div>
+
+  </div>
 </section>
 
-<!-- ═══ PROPUESTA ══════════════════════════════════════════════ -->
-<section class="seccion propuesta" aria-label="Quiénes somos">
-  <div class="seccion-inner">
-    <p class="propuesta-label fi">El estudio</p>
-    <p class="propuesta-p1 fi fi-d1">
-      No trabajamos con plantillas ni con fórmulas.
-      Cada proyecto empieza por entender quién sos
-      y qué necesitás decir.
-    </p>
-    <p class="propuesta-p2 fi fi-d2">
-      Riberastudio nació del litoral argentino con una convicción simple:
-      la presencia digital de un proyecto tiene que ser tan cuidada
-      como el proyecto mismo. Usamos tecnología con criterio, no como fin en sí mismo.
-    </p>
-  </div>
-</section>
-
-<!-- ═══ SERVICIOS ══════════════════════════════════════════════ -->
-<section class="seccion servicios" aria-labelledby="srv-label" id="servicios">
-  <div class="seccion-inner">
+<!-- ═══════════════════════════════════════════════════════
+     SERVICIOS — tipografía enorme sobre negro
+════════════════════════════════════════════════════════ -->
+<section class="servicios" aria-labelledby="srv-label">
+  <div class="srv-bg-num" aria-hidden="true" id="srvNum">3</div>
+  <div class="srv-inner">
     <div class="srv-header fi">
       <p class="srv-label" id="srv-label">Servicios</p>
-      <p class="srv-nota">Todo lo que necesitás para estar presente en la web.</p>
+      <p class="srv-intro">Todo lo que necesitás<br>para estar presente.</p>
     </div>
 
     <ul class="srv-lista" role="list">
-      <li class="srv-item fi fi-d1">
-        <span class="srv-n" aria-hidden="true">01</span>
+      <li class="srv-item fi d1" data-num="01">
         <span class="srv-nombre">Sitio web</span>
-        <span class="srv-desc">A medida, para durar,<br>fácil de actualizar.</span>
+        <div class="srv-meta">
+          <span class="srv-num">01</span>
+          <span class="srv-desc">A medida, para durar,<br>fácil de actualizar.</span>
+        </div>
       </li>
-      <li class="srv-item fi fi-d2">
-        <span class="srv-n" aria-hidden="true">02</span>
+      <li class="srv-item fi d2" data-num="02">
         <span class="srv-nombre">Landing page</span>
-        <span class="srv-desc">Un objetivo. Sin<br>distracciones.</span>
+        <div class="srv-meta">
+          <span class="srv-num">02</span>
+          <span class="srv-desc">Un objetivo.<br>Sin distracciones.</span>
+        </div>
       </li>
-      <li class="srv-item fi fi-d3">
-        <span class="srv-n" aria-hidden="true">03</span>
+      <li class="srv-item fi d3" data-num="03">
         <span class="srv-nombre">Identidad digital</span>
-        <span class="srv-desc">Coherencia en todos<br>los puntos de contacto.</span>
+        <div class="srv-meta">
+          <span class="srv-num">03</span>
+          <span class="srv-desc">Coherencia en todos<br>los puntos de contacto.</span>
+        </div>
       </li>
     </ul>
 
-    <p class="srv-detalle fi">
-      <strong>Dominio y hosting incluidos.</strong>
-      Cambios ilimitados en el plan de mantenimiento mensual.
+    <p class="srv-detalle fi d4">
+      <b>Dominio y hosting incluidos.</b>
+      Cambios ilimitados en el plan mensual.
       Entrega en menos de tres semanas.
     </p>
   </div>
 </section>
 
-<!-- ═══ PROCESO ════════════════════════════════════════════════ -->
-<section class="seccion proceso" aria-labelledby="proc-label">
-  <div class="seccion-inner">
-    <div class="proc-header fi">
-      <p class="proc-label" id="proc-label">Cómo trabajamos</p>
-      <p class="proc-intro">Cuatro momentos. Sin sorpresas en el medio.</p>
+<!-- ═══════════════════════════════════════════════════════
+     PROCESO — cards horizontales con línea verde
+════════════════════════════════════════════════════════ -->
+<section class="proceso" aria-labelledby="proc-label">
+  <div class="proceso-header fi">
+    <p class="proceso-label" id="proc-label">Cómo trabajamos</p>
+    <p class="proceso-claim">Cuatro momentos.<br>Sin sorpresas en el medio.</p>
+  </div>
+  <div class="proceso-track">
+    <div class="paso fi d1">
+      <span class="paso-n">I</span>
+      <h3 class="paso-titulo">Escucha</h3>
+      <p class="paso-desc">Entendemos tu proyecto, tu contexto y tu público antes de proponer cualquier cosa.</p>
     </div>
-
-    <ul class="proc-lista" role="list">
-      <li class="proc-item fi">
-        <span class="proc-n" aria-hidden="true">I</span>
-        <span class="proc-titulo">Escucha</span>
-        <span class="proc-desc">Entendemos tu proyecto, tu contexto y tu público antes de proponer cualquier cosa.</span>
-      </li>
-      <li class="proc-item fi fi-d1">
-        <span class="proc-n" aria-hidden="true">II</span>
-        <span class="proc-titulo">Definición</span>
-        <span class="proc-desc">Acordamos estructura, contenido y objetivos. Nada se diseña antes de que el fondo esté claro.</span>
-      </li>
-      <li class="proc-item fi fi-d2">
-        <span class="proc-n" aria-hidden="true">III</span>
-        <span class="proc-titulo">Diseño</span>
-        <span class="proc-desc">Construimos con atención al detalle. Cada decisión visual tiene una razón. Revisiones en cada etapa.</span>
-      </li>
-      <li class="proc-item fi fi-d3">
-        <span class="proc-n" aria-hidden="true">IV</span>
-        <span class="proc-titulo">Entrega</span>
-        <span class="proc-desc">Tu sitio en el aire en menos de tres semanas. Después del lanzamiento, seguimos disponibles.</span>
-      </li>
-    </ul>
+    <div class="paso fi d2">
+      <span class="paso-n">II</span>
+      <h3 class="paso-titulo">Definición</h3>
+      <p class="paso-desc">Acordamos estructura, contenido y objetivos. Nada se diseña antes de que el fondo esté claro.</p>
+    </div>
+    <div class="paso fi d3">
+      <span class="paso-n">III</span>
+      <h3 class="paso-titulo">Diseño</h3>
+      <p class="paso-desc">Cada decisión visual tiene una razón. Revisiones en cada etapa. No hay sorpresas al final.</p>
+    </div>
+    <div class="paso fi d4">
+      <span class="paso-n">IV</span>
+      <h3 class="paso-titulo">Entrega</h3>
+      <p class="paso-desc">Tu sitio en el aire en menos de tres semanas. Después del lanzamiento, seguimos disponibles.</p>
+    </div>
   </div>
 </section>
 
-<!-- ═══ FAQ ════════════════════════════════════════════════════ -->
+<!-- ═══════════════════════════════════════════════════════
+     FAQ
+════════════════════════════════════════════════════════ -->
 <section class="faq" aria-labelledby="faq-label">
   <div class="faq-inner">
-    <p class="faq-label fi" id="faq-label">Preguntas frecuentes</p>
-    <ul class="faq-lista fi-d1" role="list">
-
+    <div class="faq-header fi">
+      <p class="faq-label" id="faq-label">FAQ</p>
+      <p class="faq-claim">Las preguntas que<br>nos hacen seguido.</p>
+    </div>
+    <ul class="faq-lista" role="list">
       <li class="faq-item fi">
         <button class="faq-btn" aria-expanded="false">
           <span class="faq-q">¿Cuánto tarda un proyecto?</span>
-          <span class="faq-icono" aria-hidden="true"></span>
+          <span class="faq-plus" aria-hidden="true"></span>
         </button>
         <div class="faq-resp" role="region">
-          <p class="faq-resp-inner">Un sitio web completo está listo en menos de tres semanas desde que acordamos el contenido. Una landing puede salir antes. Siempre definimos plazos reales antes de arrancar.</p>
+          <p class="faq-resp-p">Un sitio web completo está listo en menos de tres semanas desde que acordamos el contenido. Una landing puede salir antes. Siempre definimos plazos reales antes de arrancar, sin promesas vacías.</p>
         </div>
       </li>
-
-      <li class="faq-item fi fi-d1">
+      <li class="faq-item fi d1">
         <button class="faq-btn" aria-expanded="false">
           <span class="faq-q">¿Cómo funciona el mantenimiento?</span>
-          <span class="faq-icono" aria-hidden="true"></span>
+          <span class="faq-plus" aria-hidden="true"></span>
         </button>
         <div class="faq-resp" role="region">
-          <p class="faq-resp-inner">Después de la entrega, el sitio queda bajo un plan mensual que incluye todos los cambios y actualizaciones que necesités: textos, fotos, secciones nuevas. Lo pedís y lo hacemos nosotros.</p>
+          <p class="faq-resp-p">Después de la entrega, el sitio queda bajo un plan mensual que incluye todos los cambios que necesités: textos, imágenes, secciones nuevas. Lo pedís y lo hacemos nosotros.</p>
         </div>
       </li>
-
-      <li class="faq-item fi fi-d2">
+      <li class="faq-item fi d2">
         <button class="faq-btn" aria-expanded="false">
           <span class="faq-q">¿El dominio y el hosting están incluidos?</span>
-          <span class="faq-icono" aria-hidden="true"></span>
+          <span class="faq-plus" aria-hidden="true"></span>
         </button>
         <div class="faq-resp" role="region">
-          <p class="faq-resp-inner">Sí. Nos encargamos de todo eso para que no tengas que lidiar con tecnicismos. Tu sitio queda andando desde el primer día sin que tengas que contratar nada por separado.</p>
+          <p class="faq-resp-p">Sí. Nos encargamos de todo para que no tengas que lidiar con tecnicismos. Tu sitio queda andando desde el primer día sin que tengas que contratar nada por separado.</p>
         </div>
       </li>
-
-      <li class="faq-item fi fi-d3">
+      <li class="faq-item fi d3">
         <button class="faq-btn" aria-expanded="false">
           <span class="faq-q">¿Trabajan con cualquier tipo de proyecto?</span>
-          <span class="faq-icono" aria-hidden="true"></span>
+          <span class="faq-plus" aria-hidden="true"></span>
         </button>
         <div class="faq-resp" role="region">
-          <p class="faq-resp-inner">Trabajamos con profesionales independientes, emprendedores y proyectos con identidad propia. Antes de cotizar, hablamos para ver si tiene sentido trabajar juntos.</p>
+          <p class="faq-resp-p">Trabajamos con profesionales independientes, emprendedores y proyectos con identidad propia. Antes de cotizar, hablamos para ver si tiene sentido trabajar juntos.</p>
         </div>
       </li>
-
-      <li class="faq-item fi fi-d3">
+      <li class="faq-item fi d4">
         <button class="faq-btn" aria-expanded="false">
           <span class="faq-q">¿Cómo es el presupuesto?</span>
-          <span class="faq-icono" aria-hidden="true"></span>
+          <span class="faq-plus" aria-hidden="true"></span>
         </button>
         <div class="faq-resp" role="region">
-          <p class="faq-resp-inner">Cada proyecto tiene su precio según el alcance. Después de la primera charla, mandamos una propuesta clara con todo lo que incluye, sin letra chica.</p>
+          <p class="faq-resp-p">Cada proyecto tiene su precio según el alcance. Después de la primera charla, mandamos una propuesta clara con todo lo que incluye. Sin letra chica, sin sorpresas.</p>
         </div>
       </li>
-
     </ul>
   </div>
 </section>
 
-<!-- ═══ CONTACTO ═══════════════════════════════════════════════ -->
+<!-- ═══════════════════════════════════════════════════════
+     CONTACTO
+════════════════════════════════════════════════════════ -->
 <section class="contacto" id="contacto" aria-labelledby="cont-h2">
 
   <!-- El río desemboca aquí -->
-  <svg class="rio-desemboca" viewBox="0 0 1440 600"
-       preserveAspectRatio="xMidYMax slice"
+  <svg class="contacto-rio" viewBox="0 0 1440 800"
+       preserveAspectRatio="xMidYMax meet"
        xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-    <path d="M-100 0 C300 80 600 -40 900 60 C1100 120 1300 30 1540 80 L1540 600 L-100 600 Z"
-          fill="#4F7C74" opacity=".12"/>
-    <path d="M-100 100 C200 180 500 80 800 150 C1000 200 1250 110 1540 160 L1540 600 L-100 600 Z"
-          fill="#4F7C74" opacity=".08"/>
-    <path d="M -200 200 C 200 160, 450 220, 700 185 C 950 150, 1200 195, 1540 170"
-          stroke="#4F7C74" stroke-width="1" fill="none" opacity=".4"/>
-    <path d="M -200 240 C 180 200, 430 260, 680 225 C 930 190, 1200 235, 1540 210"
-          stroke="#4F7C74" stroke-width=".6" fill="none" opacity=".25"/>
+    <path d="M -200 300 C 200 260 500 330 800 295 C 1100 260 1300 310 1640 285"
+          stroke="#4F7C74" stroke-width=".8" fill="none" opacity=".2"/>
+    <path d="M -200 350 C 180 308 480 378 780 342 C 1080 306 1300 358 1640 332"
+          stroke="#4F7C74" stroke-width=".6" fill="none" opacity=".15"/>
+    <path d="M -200 400 C 160 355 460 428 760 390 C 1060 352 1300 406 1640 380"
+          stroke="#4F7C74" stroke-width=".5" fill="none" opacity=".12"/>
+    <!-- Forma que llena — la orilla -->
+    <path d="M -200 600 C 200 560 500 610 800 582 C 1100 554 1300 595 1640 570 L 1640 900 L -200 900 Z"
+          fill="#4F7C74" opacity=".07"/>
+    <path d="M -200 680 C 180 648 480 692 780 665 C 1080 638 1300 672 1640 650 L 1640 900 L -200 900 Z"
+          fill="#4F7C74" opacity=".06"/>
   </svg>
 
   <div class="contacto-inner">
-    <p class="contacto-label fi">Contacto</p>
-    <h2 class="contacto-titulo fi fi-d1" id="cont-h2">
-      ¿Tenés algo<br>en <em>mente?</em>
+    <h2 class="contacto-titulo fi" id="cont-h2">
+      ¿Tenés algo
+      <em>en mente?</em>
     </h2>
-    <div class="contacto-links fi fi-d2">
+    <div class="contacto-fila fi d2">
       <a href="mailto:riberaestudioarg@gmail.com" class="contacto-email">
-        riberaestudioarg@gmail.com <span aria-hidden="true">→</span>
+        riberaestudioarg@gmail.com
+        <span class="contacto-email-flecha" aria-hidden="true">↗</span>
       </a>
-      <a href="https://instagram.com/riberastudio_"
-         class="contacto-ig" target="_blank" rel="noopener">
-        @riberastudio_
-      </a>
+      <div class="contacto-social">
+        <a href="https://instagram.com/riberastudio_"
+           class="contacto-ig" target="_blank" rel="noopener">
+          @riberastudio_
+        </a>
+        <p class="contacto-nota">Litoral, Argentina</p>
+      </div>
     </div>
-    <p class="contacto-nota fi fi-d3">Sin compromisos · Solo una charla</p>
   </div>
-</section>
 
+</section>
 </main>
 
-<!-- ═══ FOOTER ═════════════════════════════════════════════════ -->
+<!-- ═══════════════════════════════════════════════════════
+     FOOTER
+════════════════════════════════════════════════════════ -->
 <footer role="contentinfo">
   <div class="footer-inner">
     <div class="footer-logo" aria-label="Riberastudio">
-      <svg viewBox="0 0 884 163" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-        <text font-family="Georgia,'Times New Roman',serif" font-weight="700"
-              font-size="149" fill="#FAFAF7" x="0" y="128">Ribera</text>
-        <text font-family="Georgia,'Times New Roman',serif" font-weight="400"
-              font-style="italic" font-size="149" fill="#FAFAF7" x="477" y="128">studio</text>
+      <svg viewBox="0 0 883.8 163.18" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <text font-family="Georgia,'Times New Roman',serif"
+              font-weight="700" font-size="148.61"
+              fill="#FAFAF7" x="0" y="127.66">Ribera</text>
+        <text font-family="Georgia,'Times New Roman',serif"
+              font-weight="400" font-style="italic" font-size="148.61"
+              fill="#FAFAF7" x="477.34" y="127.66">studio</text>
       </svg>
     </div>
     <p class="footer-copy">© 2025 Riberastudio. Litoral, Argentina.</p>
   </div>
 </footer>
 
+<!-- ═══════════════════════════════════════════════════════
+     JS
+════════════════════════════════════════════════════════ -->
 <script>
-/* ── NAV scroll ──────────────────────────────────────── */
-const nav = document.getElementById('nav');
+/* ─── Cursor personalizado ─────────────────────────── */
+const dot  = document.getElementById('cursor-dot');
+const ring = document.getElementById('cursor-ring');
+let cx = 0, cy = 0, rx = 0, ry = 0;
+
+document.addEventListener('mousemove', e => { cx = e.clientX; cy = e.clientY; });
+
+(function loopCursor() {
+  rx += (cx - rx) * .12;
+  ry += (cy - ry) * .12;
+  dot.style.transform  = `translate(calc(${cx}px - 50%), calc(${cy}px - 50%))`;
+  ring.style.transform = `translate(calc(${rx}px - 50%), calc(${ry}px - 50%))`;
+  requestAnimationFrame(loopCursor);
+})();
+
+document.querySelectorAll('a,button,.srv-item').forEach(el => {
+  el.addEventListener('mouseenter', () => document.body.classList.add('cursor-hover'));
+  el.addEventListener('mouseleave', () => document.body.classList.remove('cursor-hover'));
+});
+
+/* ─── Nav scroll ───────────────────────────────────── */
+const nav  = document.getElementById('nav');
 const hero = document.getElementById('hero');
+new IntersectionObserver(([e]) => {
+  nav.classList.toggle('sc', !e.isIntersecting);
+}, { threshold: .05 }).observe(hero);
 
-const navObs = new IntersectionObserver(
-  ([e]) => {
-    nav.classList.toggle('scrolled', !e.isIntersecting);
-    nav.classList.toggle('hero-zone', e.isIntersecting);
-  },
-  { threshold: 0.05 }
-);
-navObs.observe(hero);
-
-/* ── Fade-in al scroll ───────────────────────────────── */
-const fiEls = document.querySelectorAll('.fi');
-const fiObs = new IntersectionObserver(
-  (entries) => {
-    entries.forEach(e => {
-      if (e.isIntersecting) {
-        e.target.classList.add('v');
-        fiObs.unobserve(e.target);
-      }
-    });
-  },
-  { threshold: 0.08 }
-);
-fiEls.forEach(el => fiObs.observe(el));
-
-/* ── Parallax muy suave en hero ──────────────────────── */
-const heroP = document.getElementById('heroParallax');
-let ticking = false;
+/* ─── Parallax hero suavísimo ──────────────────────── */
+const heroTitulo = document.querySelector('.hero-titulo');
+let pTick = false;
 window.addEventListener('scroll', () => {
-  if (!ticking) {
+  if (!pTick) {
     requestAnimationFrame(() => {
       const y = window.scrollY;
-      if (y < window.innerHeight) {
-        heroP.style.transform = `translateY(${y * 0.12}px)`;
+      if (y < window.innerHeight * 1.2) {
+        heroTitulo.style.transform = `translateY(${y * .08}px)`;
       }
-      ticking = false;
+      pTick = false;
     });
-    ticking = true;
+    pTick = true;
   }
 }, { passive: true });
 
-/* ── Micro-movimiento con mouse en hero ──────────────── */
-let mx = 0, my = 0, cx = 0, cy = 0;
+/* ─── Mouse parallax en hero ───────────────────────── */
+let mx = 0, my = 0, hmx = 0, hmy = 0;
 hero.addEventListener('mousemove', e => {
   const r = hero.getBoundingClientRect();
-  mx = ((e.clientX - r.left) / r.width  - .5) * 10;
-  my = ((e.clientY - r.top)  / r.height - .5) * 6;
+  mx = ((e.clientX - r.left) / r.width  - .5) * 14;
+  my = ((e.clientY - r.top)  / r.height - .5) * 8;
 });
 hero.addEventListener('mouseleave', () => { mx = 0; my = 0; });
 
-(function lerp() {
-  cx += (mx - cx) * .06;
-  cy += (my - cy) * .06;
-  heroP.style.transform =
-    `translate(${cx}px, ${cy + window.scrollY * .12}px)`;
-  requestAnimationFrame(lerp);
+(function loopHero() {
+  hmx += (mx - hmx) * .05;
+  hmy += (my - hmy) * .05;
+  const scrollY = window.scrollY;
+  if (scrollY < window.innerHeight) {
+    heroTitulo.style.transform =
+      `translate(${hmx}px, calc(${hmy}px + ${scrollY * .08}px))`;
+  }
+  requestAnimationFrame(loopHero);
 })();
 
-/* ── FAQ acordeón ────────────────────────────────────── */
+/* ─── Número de fondo en servicios ────────────────── */
+const srvNum   = document.getElementById('srvNum');
+const srvItems = document.querySelectorAll('.srv-item');
+srvItems.forEach((item, i) => {
+  item.addEventListener('mouseenter', () => {
+    srvNum.textContent = String(i + 1).padStart(2, '0');
+    srvNum.style.opacity = '1';
+  });
+  item.addEventListener('mouseleave', () => {
+    srvNum.style.opacity = '0';
+  });
+});
+
+/* ─── Scroll reveal ────────────────────────────────── */
+const fiEls = document.querySelectorAll('.fi, .reveal-wrap, .paso');
+const fiObs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('v');
+      fiObs.unobserve(e.target);
+    }
+  });
+}, { threshold: .07 });
+fiEls.forEach(el => fiObs.observe(el));
+
+/* ─── FAQ acordeón ─────────────────────────────────── */
 document.querySelectorAll('.faq-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     const item = btn.closest('.faq-item');
     const open = item.classList.contains('open');
-
-    // Cerrar todos
     document.querySelectorAll('.faq-item.open').forEach(i => {
       i.classList.remove('open');
-      i.querySelector('.faq-btn').setAttribute('aria-expanded', 'false');
+      i.querySelector('.faq-btn').setAttribute('aria-expanded','false');
     });
-
     if (!open) {
       item.classList.add('open');
-      btn.setAttribute('aria-expanded', 'true');
+      btn.setAttribute('aria-expanded','true');
     }
   });
 });
