@@ -4,29 +4,30 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="Riberastudio — Presencia digital para proyectos con identidad. Litoral, Argentina.">
+<link rel="icon" type="image/png" href="favicon.png">
 <title>Riberastudio</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:wght@300;400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
 
 <style>
-/* ══════════════════════════════════════════════════════════
+/* ══════════════════════════════════════════════════════
    TOKENS
-══════════════════════════════════════════════════════════ */
+══════════════════════════════════════════════════════ */
 :root {
   --azul:   #143A5A;
   --verde:  #4F7C74;
   --blanco: #FAFAF7;
   --negro:  #171717;
   --gris:   #6E6E6A;
-  --gris-l: #B4B4B0;
+  --gris-l: #B0B0AC;
   --expo:   cubic-bezier(.16,1,.3,1);
   --suave:  cubic-bezier(.4,0,.2,1);
 }
 
-/* ══════════════════════════════════════════════════════════
+/* ══════════════════════════════════════════════════════
    RESET
-══════════════════════════════════════════════════════════ */
+══════════════════════════════════════════════════════ */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { font-size: 16px; scroll-behavior: smooth; }
 body {
@@ -36,113 +37,106 @@ body {
   font-weight: 300;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
-  cursor: none; /* cursor custom */
+  cursor: none;
 }
 a, button { cursor: none; }
-img, svg { display: block; }
 
-/* ══════════════════════════════════════════════════════════
-   CURSOR CUSTOM
-══════════════════════════════════════════════════════════ */
+/* ══════════════════════════════════════════════════════
+   CURSOR
+══════════════════════════════════════════════════════ */
 #cursor {
   position: fixed;
   z-index: 9999;
   pointer-events: none;
   top: 0; left: 0;
-  mix-blend-mode: difference;
 }
 #cursor-dot {
-  width: 8px; height: 8px;
-  background: var(--blanco);
+  width: 7px; height: 7px;
+  background: var(--verde);
   border-radius: 50%;
   transform: translate(-50%, -50%);
-  transition: transform .15s var(--expo), width .3s var(--expo), height .3s var(--expo);
+  transition: width .3s var(--expo), height .3s var(--expo), background .3s;
 }
 #cursor-ring {
   position: absolute;
-  width: 36px; height: 36px;
-  border: 1px solid rgba(250,250,247,.5);
+  width: 34px; height: 34px;
+  border: 1px solid rgba(79,124,116,.5);
   border-radius: 50%;
   top: 0; left: 0;
   transform: translate(-50%, -50%);
-  transition: transform .45s var(--expo), width .4s var(--expo), height .4s var(--expo), opacity .3s;
+  transition: width .4s var(--expo), height .4s var(--expo), opacity .3s, border-color .3s;
 }
-body.cursor-hover #cursor-dot  { width: 48px; height: 48px; }
-body.cursor-hover #cursor-ring { opacity: 0; }
+body.cur-h #cursor-dot  { width: 50px; height: 50px; background: var(--verde); opacity: .15; }
+body.cur-h #cursor-ring { opacity: 0; }
+body.cur-dark #cursor-dot  { background: var(--blanco); }
+body.cur-dark #cursor-ring { border-color: rgba(250,250,247,.4); }
 
-/* ══════════════════════════════════════════════════════════
-   GRANO GLOBAL
-══════════════════════════════════════════════════════════ */
+/* ══════════════════════════════════════════════════════
+   GRANO
+══════════════════════════════════════════════════════ */
 #grano {
   position: fixed; inset: 0;
   pointer-events: none; z-index: 9998;
-  opacity: .025;
+  opacity: .026;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.82' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23g)'/%3E%3C/svg%3E");
   background-size: 180px;
 }
 
-/* ══════════════════════════════════════════════════════════
+/* ══════════════════════════════════════════════════════
    NAV
-══════════════════════════════════════════════════════════ */
+══════════════════════════════════════════════════════ */
 .nav {
   position: fixed; top: 0; left: 0; right: 0;
   z-index: 500;
-  padding: 1.5rem clamp(1.5rem,5vw,4.5rem);
+  padding: 1.4rem clamp(1.5rem,5vw,4.5rem);
   display: flex; justify-content: space-between; align-items: center;
-  transition: background .5s var(--suave);
-  mix-blend-mode: normal;
+  transition: background .45s var(--suave), border-color .45s;
+  border-bottom: 1px solid transparent;
 }
-.nav::after {
-  content: '';
-  position: absolute; bottom: 0; left: 0; right: 0;
-  height: 1px;
-  background: rgba(250,250,247,.12);
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform .5s var(--expo);
-}
-.nav.sc::after { transform: scaleX(1); }
 .nav.sc {
-  background: rgba(250,250,247,.93);
+  background: rgba(250,250,247,.94);
   backdrop-filter: blur(16px);
+  border-color: rgba(23,23,23,.08);
 }
-.nav.sc::after { background: rgba(23,23,23,.08); }
 
-/* Logo en nav — siempre el SVG oficial */
-.nav-logo {
-  display: block; text-decoration: none;
-  height: 20px;
+/* Logos: img tal cual, sin deformar */
+.nav-logo { display: block; text-decoration: none; line-height: 0; }
+.nav-logo img {
+  height: 24px;
+  width: auto;
+  display: block;
+  /* NUNCA se estira — object-fit no aplica a img inline pero max-width sí */
+  max-width: 220px;
+  object-fit: contain;
 }
-.nav-logo svg { height: 100%; width: auto; }
+.logo-hero  { display: block; }
+.logo-light { display: none; }
+.nav.sc .logo-hero  { display: none; }
+.nav.sc .logo-light { display: block; }
 
-/* En hero (oscuro) → logo blanco */
-.logo-oscuro { display: block; }
-.logo-claro  { display: none; }
-.nav.sc .logo-oscuro { display: none; }
-.nav.sc .logo-claro  { display: block; }
-
-.nav-contacto {
+.nav-cta {
   font-size: .72rem;
-  letter-spacing: .18em;
+  letter-spacing: .16em;
   text-transform: uppercase;
-  color: rgba(250,250,247,.7);
+  color: rgba(250,250,247,.75);
   text-decoration: none;
   position: relative;
   padding-bottom: 2px;
+  transition: color .25s;
 }
-.nav-contacto::after {
+.nav.sc .nav-cta { color: var(--azul); }
+.nav-cta::after {
   content: '';
   position: absolute; bottom: 0; left: 0; right: 0;
   height: 1px; background: currentColor;
   transform: scaleX(0); transform-origin: right;
   transition: transform .35s var(--expo);
 }
-.nav-contacto:hover::after { transform: scaleX(1); transform-origin: left; }
-.nav.sc .nav-contacto { color: var(--azul); }
+.nav-cta:hover::after { transform: scaleX(1); transform-origin: left; }
 
-/* ══════════════════════════════════════════════════════════
-   HERO  — el momento más intenso
-══════════════════════════════════════════════════════════ */
+/* ══════════════════════════════════════════════════════
+   HERO
+══════════════════════════════════════════════════════ */
 .hero {
   min-height: 100svh;
   background: var(--azul);
@@ -152,361 +146,270 @@ body.cursor-hover #cursor-ring { opacity: 0; }
   padding: 0 clamp(1.5rem,5vw,4.5rem) clamp(3rem,6vw,5.5rem);
 }
 
-/* SVG del río — se dibuja al cargar */
+/* SVG río — se dibuja al cargar */
 .hero-rio {
   position: absolute; inset: 0;
   width: 100%; height: 100%;
   pointer-events: none;
 }
-.rio-path {
-  stroke-dasharray: 2400;
-  stroke-dashoffset: 2400;
+.rio-p {
+  stroke-dasharray: 2600;
+  stroke-dashoffset: 2600;
 }
-.rio-path-1 { animation: traza 2s var(--expo) .2s forwards; }
-.rio-path-2 { animation: traza 2.4s var(--expo) .4s forwards; }
-.rio-path-3 { animation: traza 2.8s var(--expo) .6s forwards; }
+.rio-p-1 { animation: traza 2s   var(--expo) .2s  forwards; }
+.rio-p-2 { animation: traza 2.5s var(--expo) .45s forwards; }
+.rio-p-3 { animation: traza 3s   var(--expo) .7s  forwards; }
+.rio-p-4 { animation: traza 3.5s var(--expo) .9s  forwards; }
 @keyframes traza { to { stroke-dashoffset: 0; } }
 
-/* Tipografía hero — ENORME, sangra por los bordes */
-.hero-titulo {
+/* Titular enorme — emerge línea por línea */
+.hero-h1 {
   position: relative; z-index: 2;
   font-family: 'Cormorant Garamond', serif;
   font-weight: 300;
-  font-size: clamp(5rem, 13vw, 13rem);
+  font-size: clamp(4.5rem, 12vw, 12rem);
   line-height: .92;
   letter-spacing: -.03em;
   color: var(--blanco);
-  overflow: hidden;
-  /* La primera línea sangra levemente a la derecha */
+  margin-bottom: 2.5rem;
 }
-.hero-titulo .hl {
+.hl { display: block; overflow: hidden; }
+.hl span {
   display: block;
-  overflow: hidden;
-  /* Línea 2: desplazada a la derecha — asimetría */
-}
-.hero-titulo .hl:nth-child(2) {
-  padding-left: clamp(3rem, 8vw, 10rem);
-}
-.hero-titulo .hl:nth-child(3) {
-  padding-left: clamp(1rem, 3vw, 4rem);
-}
-.hero-titulo .hl span {
-  display: block;
-  transform: translateY(105%);
+  transform: translateY(108%);
   animation: emerge 1s var(--expo) forwards;
 }
-.hero-titulo .hl:nth-child(1) span { animation-delay: .7s; }
-.hero-titulo .hl:nth-child(2) span { animation-delay: .85s; }
-.hero-titulo .hl:nth-child(3) span { animation-delay: 1s; }
-.hero-titulo em { font-style: italic; color: var(--verde); }
+.hl:nth-child(1) span { animation-delay: .6s; }
+.hl:nth-child(2) span { animation-delay: .78s; }
+.hl:nth-child(3) span { animation-delay: .96s; }
 
-@keyframes emerge {
-  to { transform: translateY(0); }
-}
+/* Línea 2 desplazada → asimetría */
+.hl:nth-child(2) { padding-left: clamp(2rem, 7vw, 9rem); }
+/* Línea 3 menos desplazada */
+.hl:nth-child(3) { padding-left: clamp(.5rem, 2vw, 3rem); }
+
+.hero-h1 em { font-style: italic; color: var(--verde); }
+
+@keyframes emerge { to { transform: translateY(0); } }
 
 .hero-meta {
   position: relative; z-index: 2;
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  margin-top: 2.5rem;
+  display: flex; justify-content: space-between; align-items: flex-end;
   padding-top: 1.5rem;
-  border-top: 1px solid rgba(250,250,247,.15);
+  border-top: 1px solid rgba(250,250,247,.14);
   opacity: 0;
-  animation: aparece .9s var(--expo) 1.4s forwards;
+  animation: aparece .9s var(--expo) 1.5s forwards;
 }
 @keyframes aparece {
-  from { opacity: 0; transform: translateY(8px); }
+  from { opacity: 0; transform: translateY(10px); }
   to   { opacity: 1; transform: none; }
 }
 .hero-desc {
-  font-size: clamp(.8rem, 1.1vw, .92rem);
-  color: rgba(250,250,247,.45);
-  max-width: 280px;
-  line-height: 1.75;
-  letter-spacing: .01em;
+  font-size: clamp(.8rem,1.1vw,.9rem);
+  color: rgba(250,250,247,.42);
+  max-width: 260px;
+  line-height: 1.78;
 }
-.hero-eyebrow {
+.hero-lugar {
   font-size: .68rem;
   letter-spacing: .22em;
   text-transform: uppercase;
   color: var(--verde);
-  font-weight: 400;
   text-align: right;
 }
 
-/* ══════════════════════════════════════════════════════════
-   TRANSICIÓN HERO→CONTENIDO
-   La sección siguiente "invade" el hero
-══════════════════════════════════════════════════════════ */
+/* ══════════════════════════════════════════════════════
+   MANIFESTO — invade el hero con clip-path angular
+══════════════════════════════════════════════════════ */
 .manifesto {
-  position: relative;
-  z-index: 10;
-  margin-top: -8vw;
+  position: relative; z-index: 10;
+  margin-top: -7vw;
   background: var(--blanco);
-  clip-path: polygon(0 8vw, 100% 0, 100% 100%, 0 100%);
-  padding: calc(8vw + clamp(4rem,8vw,8rem)) clamp(1.5rem,5vw,4.5rem) clamp(5rem,9vw,9rem);
+  clip-path: polygon(0 7vw, 100% 0, 100% 100%, 0 100%);
+  padding: calc(7vw + clamp(4rem,8vw,8rem)) clamp(1.5rem,5vw,4.5rem) clamp(5rem,9vw,9rem);
 }
-
 .manifesto-inner {
   max-width: 1120px; margin: 0 auto;
   display: grid;
-  grid-template-columns: 1fr 1.6fr;
+  grid-template-columns: 1fr 1.55fr;
   gap: clamp(3rem,6vw,8rem);
   align-items: start;
 }
-.manifesto-lateral {
-  position: sticky; top: 8rem;
-}
-.manifesto-etiqueta {
+.manifesto-lateral { position: sticky; top: 8rem; }
+.m-etiqueta {
   font-size: .65rem;
   letter-spacing: .22em;
   text-transform: uppercase;
   color: var(--verde);
   font-weight: 400;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.4rem;
   display: flex; align-items: center; gap: .6rem;
 }
-.manifesto-etiqueta::before {
-  content: '';
-  width: 20px; height: 1px;
-  background: var(--verde);
-  display: block;
-}
-.manifesto-claim {
+.m-etiqueta::before { content: ''; width: 18px; height: 1px; background: var(--verde); display: block; }
+.m-claim {
   font-family: 'Cormorant Garamond', serif;
   font-weight: 300;
-  font-size: clamp(1.4rem, 2.5vw, 2rem);
-  line-height: 1.3;
+  font-size: clamp(1.4rem,2.4vw,2rem);
+  line-height: 1.28;
   color: var(--negro);
 }
-.manifesto-claim em {
-  font-style: italic;
-  color: var(--gris);
-}
+.m-claim em { font-style: italic; color: var(--gris); }
 
-.manifesto-texto p {
-  font-size: clamp(.9rem, 1.2vw, 1rem);
+.m-texto p {
+  font-size: clamp(.88rem,1.1vw,.98rem);
   color: var(--gris);
-  line-height: 1.85;
-  margin-bottom: 1.75rem;
+  line-height: 1.88;
+  margin-bottom: 1.65rem;
 }
-.manifesto-texto p:last-child { margin-bottom: 0; }
-.manifesto-texto strong {
-  color: var(--negro);
-  font-weight: 400;
-}
+.m-texto p:last-child { margin-bottom: 0; }
+.m-texto strong { color: var(--negro); font-weight: 400; }
 
-/* ══════════════════════════════════════════════════════════
-   SERVICIOS — composición tipográfica, no grid
-══════════════════════════════════════════════════════════ */
+/* ══════════════════════════════════════════════════════
+   SERVICIOS — tipografía enorme sobre negro
+══════════════════════════════════════════════════════ */
 .servicios {
   background: var(--negro);
   padding: clamp(5rem,10vw,10rem) clamp(1.5rem,5vw,4.5rem);
-  position: relative;
-  overflow: hidden;
+  position: relative; overflow: hidden;
 }
-
-/* Número enorme decorativo de fondo */
-.srv-bg-num {
+/* Número gigante de fondo */
+.srv-bgnum {
   position: absolute;
   font-family: 'Cormorant Garamond', serif;
-  font-size: 40vw;
-  font-weight: 300;
-  color: rgba(250,250,247,.02);
+  font-size: 50vw; font-weight: 300;
+  color: rgba(250,250,247,.018);
   line-height: 1;
   top: 50%; left: 50%;
-  transform: translate(-50%, -50%);
-  pointer-events: none;
-  user-select: none;
+  transform: translate(-50%,-50%);
+  pointer-events: none; user-select: none;
   letter-spacing: -.05em;
-  transition: opacity .5s;
+  transition: opacity .4s var(--suave);
+  opacity: 0;
 }
 
 .srv-inner { max-width: 1120px; margin: 0 auto; }
-
 .srv-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  margin-bottom: clamp(3rem,6vw,6rem);
+  display: flex; justify-content: space-between; align-items: flex-end;
+  padding-bottom: clamp(2rem,4vw,3.5rem);
+  border-bottom: 1px solid rgba(250,250,247,.07);
+  margin-bottom: 0;
 }
 .srv-label {
-  font-size: .65rem;
-  letter-spacing: .22em;
-  text-transform: uppercase;
-  color: var(--verde);
-  font-weight: 400;
+  font-size: .65rem; letter-spacing: .22em;
+  text-transform: uppercase; color: var(--verde); font-weight: 400;
 }
 .srv-intro {
-  font-size: .85rem;
-  color: rgba(250,250,247,.3);
-  text-align: right;
-  max-width: 220px;
-  line-height: 1.65;
+  font-size: .82rem; color: rgba(250,250,247,.28);
+  text-align: right; max-width: 200px; line-height: 1.65;
 }
 
-/* Cada servicio: tipografía ENORME + descripción pequeña asimétrica */
 .srv-lista { list-style: none; }
-
 .srv-item {
   position: relative;
-  padding: clamp(2rem,4vw,3.5rem) 0;
-  border-top: 1px solid rgba(250,250,247,.07);
+  padding: clamp(1.8rem,3.5vw,3rem) 0;
+  border-bottom: 1px solid rgba(250,250,247,.07);
   display: grid;
   grid-template-columns: 1fr auto;
-  align-items: end;
-  gap: 2rem;
+  align-items: end; gap: 2rem;
   overflow: hidden;
 }
-.srv-item:last-child { border-bottom: 1px solid rgba(250,250,247,.07); }
-
-/* Línea de reveal al hover */
-.srv-item::before {
+/* Línea verde que crece al hover */
+.srv-item::after {
   content: '';
-  position: absolute;
-  left: 0; bottom: 0; right: 0;
-  height: 1px;
-  background: var(--verde);
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform .6s var(--expo);
+  position: absolute; bottom: 0; left: 0; right: 0;
+  height: 1px; background: var(--verde);
+  transform: scaleX(0); transform-origin: left;
+  transition: transform .55s var(--expo);
 }
-.srv-item:hover::before { transform: scaleX(1); }
+.srv-item:hover::after { transform: scaleX(1); }
 
 .srv-nombre {
   font-family: 'Cormorant Garamond', serif;
   font-weight: 300;
-  font-size: clamp(3rem, 7vw, 6.5rem);
-  line-height: .95;
-  letter-spacing: -.025em;
+  font-size: clamp(2.8rem,6.5vw,6rem);
+  line-height: .95; letter-spacing: -.025em;
   color: var(--blanco);
-  transition: color .35s var(--suave), transform .5s var(--expo);
   display: block;
+  transition: color .3s var(--suave), transform .5s var(--expo);
   transform-origin: left;
 }
 .srv-item:hover .srv-nombre {
   color: var(--verde);
-  transform: translateX(1.5rem);
+  transform: translateX(1.25rem);
 }
-
-.srv-meta {
-  text-align: right;
-  padding-bottom: .6rem;
-  flex-shrink: 0;
-}
-.srv-num {
-  font-size: .65rem;
-  color: var(--verde);
-  letter-spacing: .15em;
-  display: block;
-  margin-bottom: .5rem;
-}
-.srv-desc {
-  font-size: .78rem;
-  color: rgba(250,250,247,.3);
-  max-width: 180px;
-  line-height: 1.6;
-  margin-left: auto;
-}
+.srv-meta { text-align: right; padding-bottom: .5rem; }
+.srv-num  { font-size: .62rem; color: var(--verde); letter-spacing: .15em; display: block; margin-bottom: .4rem; }
+.srv-desc { font-size: .76rem; color: rgba(250,250,247,.28); max-width: 170px; line-height: 1.6; margin-left: auto; }
 
 .srv-detalle {
-  margin-top: 3rem;
-  padding-top: 2rem;
-  border-top: 1px solid rgba(250,250,247,.07);
-  font-size: .78rem;
-  color: rgba(250,250,247,.25);
-  line-height: 1.85;
-  max-width: 500px;
+  margin-top: 2.5rem; padding-top: 2rem;
+  border-top: 1px solid rgba(250,250,247,.06);
+  font-size: .76rem; color: rgba(250,250,247,.22);
+  line-height: 1.9; max-width: 480px;
 }
-.srv-detalle b {
-  color: var(--verde);
-  font-weight: 400;
-}
+.srv-detalle b { color: var(--verde); font-weight: 400; }
 
-/* ══════════════════════════════════════════════════════════
-   PROCESO — horizontal scroll en desktop
-══════════════════════════════════════════════════════════ */
+/* ══════════════════════════════════════════════════════
+   PROCESO
+══════════════════════════════════════════════════════ */
 .proceso {
   background: var(--blanco);
   padding: clamp(5rem,10vw,10rem) 0;
   overflow: hidden;
 }
 .proceso-header {
-  padding: 0 clamp(1.5rem,5vw,4.5rem);
   max-width: 1120px; margin: 0 auto;
-  margin-bottom: clamp(3rem,5vw,5rem);
+  padding: 0 clamp(1.5rem,5vw,4.5rem) clamp(3rem,5vw,5rem);
   display: flex; justify-content: space-between; align-items: flex-end;
 }
-.proceso-label {
-  font-size: .65rem;
-  letter-spacing: .22em;
-  text-transform: uppercase;
-  color: var(--gris-l);
+.proc-label {
+  font-size: .65rem; letter-spacing: .22em;
+  text-transform: uppercase; color: var(--gris-l);
 }
-.proceso-claim {
+.proc-claim {
   font-family: 'Cormorant Garamond', serif;
-  font-style: italic;
-  font-weight: 300;
+  font-style: italic; font-weight: 300;
   font-size: clamp(1rem,1.5vw,1.3rem);
-  color: var(--gris);
-  text-align: right;
+  color: var(--gris); text-align: right;
 }
 
-/* Track horizontal */
 .proceso-track {
   display: flex;
   padding: 0 clamp(1.5rem,5vw,4.5rem);
-  gap: clamp(2rem,4vw,4rem);
-  /* En desktop: no scroll, se distribuyen. En mobile: scroll horizontal */
+  gap: clamp(2rem,3.5vw,3.5rem);
   overflow-x: auto;
-  scrollbar-width: none;
-  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none; -webkit-overflow-scrolling: touch;
 }
 .proceso-track::-webkit-scrollbar { display: none; }
 
 .paso {
-  flex: 0 0 clamp(240px, 25vw, 320px);
+  flex: 0 0 clamp(220px,22vw,300px);
   padding-top: 2rem;
   border-top: 1px solid var(--negro);
   position: relative;
 }
 .paso::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0;
-  height: 2px;
-  background: var(--verde);
-  width: 0;
-  transition: width .8s var(--expo);
+  content: ''; position: absolute; top: 0; left: 0;
+  height: 2px; background: var(--verde);
+  width: 0; transition: width .9s var(--expo);
 }
-.paso.v::before { width: 40%; }
-
+.paso.v::before { width: 38%; }
 .paso-n {
   font-family: 'Cormorant Garamond', serif;
-  font-style: italic;
-  font-size: .95rem;
-  color: var(--verde);
-  margin-bottom: 2rem;
-  display: block;
+  font-style: italic; font-size: .9rem;
+  color: var(--verde); margin-bottom: 1.75rem; display: block;
 }
 .paso-titulo {
   font-family: 'Cormorant Garamond', serif;
   font-weight: 400;
-  font-size: clamp(1.3rem,2vw,1.6rem);
-  color: var(--negro);
-  margin-bottom: .85rem;
-  line-height: 1.15;
+  font-size: clamp(1.25rem,1.9vw,1.55rem);
+  color: var(--negro); margin-bottom: .75rem; line-height: 1.1;
 }
-.paso-desc {
-  font-size: .82rem;
-  color: var(--gris);
-  line-height: 1.8;
-}
+.paso-desc { font-size: .81rem; color: var(--gris); line-height: 1.82; }
 
-/* ══════════════════════════════════════════════════════════
+/* ══════════════════════════════════════════════════════
    FAQ
-══════════════════════════════════════════════════════════ */
+══════════════════════════════════════════════════════ */
 .faq {
   background: var(--blanco);
   padding: clamp(4rem,8vw,8rem) clamp(1.5rem,5vw,4.5rem);
@@ -514,25 +417,14 @@ body.cursor-hover #cursor-ring { opacity: 0; }
 }
 .faq-inner { max-width: 1120px; margin: 0 auto; }
 .faq-header {
-  display: grid;
-  grid-template-columns: 1fr 2fr;
-  gap: 4rem;
-  margin-bottom: 4rem;
-  align-items: end;
+  display: grid; grid-template-columns: 1fr 2fr;
+  gap: 4rem; margin-bottom: 4rem; align-items: end;
 }
-.faq-label {
-  font-size: .65rem;
-  letter-spacing: .22em;
-  text-transform: uppercase;
-  color: var(--verde);
-  font-weight: 400;
-}
+.faq-label { font-size: .65rem; letter-spacing: .22em; text-transform: uppercase; color: var(--verde); font-weight: 400; }
 .faq-claim {
   font-family: 'Cormorant Garamond', serif;
-  font-weight: 300;
-  font-size: clamp(1.3rem,2vw,1.75rem);
-  color: var(--gris);
-  line-height: 1.4;
+  font-weight: 300; font-size: clamp(1.3rem,2vw,1.7rem);
+  color: var(--gris); line-height: 1.4;
 }
 
 .faq-lista { list-style: none; }
@@ -545,267 +437,202 @@ body.cursor-hover #cursor-ring { opacity: 0; }
 }
 .faq-q {
   font-family: 'Cormorant Garamond', serif;
-  font-weight: 400;
-  font-size: clamp(1rem,1.5vw,1.2rem);
-  color: var(--negro);
-  line-height: 1.3;
+  font-weight: 400; font-size: clamp(1rem,1.5vw,1.2rem);
+  color: var(--negro); line-height: 1.3;
 }
 .faq-plus {
-  width: 22px; height: 22px;
-  flex-shrink: 0; position: relative;
+  width: 22px; height: 22px; flex-shrink: 0; position: relative;
 }
-.faq-plus::before,
-.faq-plus::after {
-  content: '';
-  position: absolute;
-  background: var(--verde);
-  transition: transform .4s var(--expo), opacity .3s;
+.faq-plus::before, .faq-plus::after {
+  content: ''; position: absolute; background: var(--verde);
+  transition: transform .38s var(--expo), opacity .28s;
 }
 .faq-plus::before { width: 100%; height: 1px; top: 50%; transform: translateY(-50%); }
 .faq-plus::after  { width: 1px; height: 100%; left: 50%; transform: translateX(-50%); }
 .faq-item.open .faq-plus::after { transform: translateX(-50%) rotate(90deg); opacity: 0; }
-
 .faq-resp { max-height: 0; overflow: hidden; transition: max-height .55s var(--expo); }
 .faq-resp-p {
   padding-bottom: 1.6rem;
-  font-size: .875rem; color: var(--gris); line-height: 1.82;
-  max-width: 620px;
+  font-size: .875rem; color: var(--gris); line-height: 1.85; max-width: 620px;
 }
 .faq-item.open .faq-resp { max-height: 250px; }
 
-/* ══════════════════════════════════════════════════════════
-   CONTACTO — cierra con el azul del hero
-══════════════════════════════════════════════════════════ */
+/* ══════════════════════════════════════════════════════
+   CONTACTO
+══════════════════════════════════════════════════════ */
 .contacto {
   background: var(--azul);
   padding: clamp(6rem,12vw,12rem) clamp(1.5rem,5vw,4.5rem);
-  position: relative;
-  overflow: hidden;
+  position: relative; overflow: hidden;
 }
-
-/* El río desemboca aquí — curvas que llenan el fondo */
 .contacto-rio {
-  position: absolute;
-  inset: 0; width: 100%; height: 100%;
+  position: absolute; inset: 0; width: 100%; height: 100%;
   pointer-events: none;
 }
+.contacto-inner { max-width: 1120px; margin: 0 auto; position: relative; z-index: 2; }
 
-.contacto-inner {
-  max-width: 1120px; margin: 0 auto;
-  position: relative; z-index: 2;
-}
-
-/* Titular enorme que sangra */
 .contacto-titulo {
   font-family: 'Cormorant Garamond', serif;
   font-weight: 300;
   font-size: clamp(4rem, 11vw, 11rem);
-  line-height: .9;
-  letter-spacing: -.03em;
+  line-height: .9; letter-spacing: -.03em;
   color: var(--blanco);
   margin-bottom: clamp(3rem,6vw,6rem);
 }
 .contacto-titulo em {
   font-style: italic;
-  color: rgba(250,250,247,.35);
+  color: rgba(250,250,247,.32);
   display: block;
   padding-left: clamp(2rem,8vw,10rem);
 }
 
 .contacto-fila {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  flex-wrap: wrap;
-  gap: 2rem;
+  display: flex; justify-content: space-between; align-items: flex-end;
+  flex-wrap: wrap; gap: 2rem;
   padding-top: 2rem;
-  border-top: 1px solid rgba(250,250,247,.12);
+  border-top: 1px solid rgba(250,250,247,.1);
 }
 .contacto-email {
   font-family: 'Cormorant Garamond', serif;
-  font-weight: 300;
-  font-size: clamp(1rem,2.2vw,1.75rem);
-  color: var(--blanco);
-  text-decoration: none;
+  font-weight: 300; font-size: clamp(1rem,2.2vw,1.75rem);
+  color: var(--blanco); text-decoration: none;
   display: flex; align-items: center; gap: .75rem;
   position: relative;
 }
 .contacto-email::after {
   content: '';
-  position: absolute;
-  bottom: -2px; left: 0; right: 0;
-  height: 1px;
-  background: rgba(250,250,247,.3);
-  transform: scaleX(1);
-  transform-origin: left;
+  position: absolute; bottom: -2px; left: 0; right: 0;
+  height: 1px; background: rgba(250,250,247,.25);
   transition: background .3s;
 }
 .contacto-email:hover::after { background: var(--verde); }
-.contacto-email-flecha {
-  font-size: 1.2em;
-  transition: transform .35s var(--expo);
-}
-.contacto-email:hover .contacto-email-flecha { transform: translate(4px,-4px); }
+.e-flecha { transition: transform .35s var(--expo); display: inline-block; }
+.contacto-email:hover .e-flecha { transform: translate(4px,-4px); }
 
-.contacto-social {
-  text-align: right;
+.contacto-social { text-align: right; }
+.c-ig {
+  font-size: .72rem; letter-spacing: .14em; text-transform: uppercase;
+  color: rgba(250,250,247,.32); text-decoration: none;
+  display: block; margin-bottom: .3rem; transition: color .25s;
 }
-.contacto-ig {
-  font-size: .75rem;
-  letter-spacing: .15em;
-  text-transform: uppercase;
-  color: rgba(250,250,247,.35);
-  text-decoration: none;
-  display: block;
-  margin-bottom: .3rem;
-  transition: color .25s;
-}
-.contacto-ig:hover { color: var(--verde); }
-.contacto-nota {
-  font-size: .68rem;
-  color: rgba(250,250,247,.2);
-  letter-spacing: .1em;
-  text-transform: uppercase;
-}
+.c-ig:hover { color: var(--verde); }
+.c-nota { font-size: .65rem; color: rgba(250,250,247,.18); letter-spacing: .1em; text-transform: uppercase; }
 
-/* ══════════════════════════════════════════════════════════
+/* ══════════════════════════════════════════════════════
    FOOTER
-══════════════════════════════════════════════════════════ */
+══════════════════════════════════════════════════════ */
 footer {
   background: var(--negro);
   padding: 1.75rem clamp(1.5rem,5vw,4.5rem);
+  border-top: 1px solid rgba(250,250,247,.05);
 }
 .footer-inner {
   max-width: 1120px; margin: 0 auto;
   display: flex; justify-content: space-between; align-items: center;
   flex-wrap: wrap; gap: 1rem;
 }
-.footer-logo svg { height: 16px; width: auto; opacity: .4; }
+.footer-logo img {
+  height: 18px; width: auto;
+  display: block; object-fit: contain;
+  opacity: .5;
+}
 .footer-copy { font-size: .68rem; color: rgba(250,250,247,.18); letter-spacing: .06em; }
 
-/* ══════════════════════════════════════════════════════════
-   REVEAL — máscara de texto
-══════════════════════════════════════════════════════════ */
-.reveal-wrap { overflow: hidden; }
-.reveal-inner {
-  transform: translateY(100%);
-  transition: transform .95s var(--expo);
-}
-.reveal-wrap.v .reveal-inner { transform: translateY(0); }
-
-/* Fade stagger genérico */
+/* ══════════════════════════════════════════════════════
+   ANIMACIONES SCROLL
+══════════════════════════════════════════════════════ */
 .fi {
-  opacity: 0;
-  transform: translateY(20px);
-  transition: opacity .85s var(--expo), transform .85s var(--expo);
+  opacity: 0; transform: translateY(22px);
+  transition: opacity .9s var(--expo), transform .9s var(--expo);
 }
 .fi.v { opacity: 1; transform: none; }
 .d1 { transition-delay: .1s; }
-.d2 { transition-delay: .2s; }
-.d3 { transition-delay: .32s; }
-.d4 { transition-delay: .44s; }
+.d2 { transition-delay: .22s; }
+.d3 { transition-delay: .34s; }
+.d4 { transition-delay: .46s; }
 
-/* ══════════════════════════════════════════════════════════
+/* ══════════════════════════════════════════════════════
    RESPONSIVE
-══════════════════════════════════════════════════════════ */
+══════════════════════════════════════════════════════ */
 @media (max-width: 860px) {
-  body { cursor: auto; }
+  body, a, button { cursor: auto; }
   #cursor { display: none; }
-  a, button { cursor: pointer; }
   .manifesto-inner { grid-template-columns: 1fr; gap: 2.5rem; }
   .manifesto-lateral { position: static; }
   .srv-item { grid-template-columns: 1fr; }
   .srv-meta { text-align: left; }
   .srv-desc { margin-left: 0; }
-  .faq-header { grid-template-columns: 1fr; gap: 1.5rem; }
-  .proceso-track { padding-right: clamp(1.5rem,5vw,4.5rem); }
-  .hero-titulo .hl:nth-child(2) { padding-left: clamp(1.5rem,5vw,4rem); }
-  .hero-titulo .hl:nth-child(3) { padding-left: 0; }
-}
-
-@media (max-width: 480px) {
-  .manifesto { clip-path: polygon(0 5vw, 100% 0, 100% 100%, 0 100%); }
+  .faq-header { grid-template-columns: 1fr; gap: 1.25rem; }
+  .proceso-header { flex-direction: column; align-items: flex-start; gap: 1rem; }
+  .proc-claim { text-align: left; }
+  .hl:nth-child(2) { padding-left: clamp(1.5rem,5vw,4rem); }
+  .hl:nth-child(3) { padding-left: 0; }
   .contacto-titulo { font-size: clamp(3rem,13vw,5rem); }
   .contacto-titulo em { padding-left: 1.5rem; }
 }
-
+@media (max-width: 480px) {
+  .manifesto { clip-path: polygon(0 5vw, 100% 0, 100% 100%, 0 100%); }
+  .srv-nombre { font-size: clamp(2.2rem,8vw,3.5rem); }
+}
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation-duration: .01ms !important;
-    transition-duration: .01ms !important;
-  }
+  *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
 }
 </style>
 </head>
 <body>
 
-<!-- CURSOR -->
 <div id="cursor" aria-hidden="true">
   <div id="cursor-dot"></div>
   <div id="cursor-ring"></div>
 </div>
-
-<!-- GRANO -->
 <div id="grano" aria-hidden="true"></div>
 
-<!-- ═══════════════════════════════════════════════════════
+<!-- ══════════════════════════════════════════════════
      NAV
-════════════════════════════════════════════════════════ -->
+══════════════════════════════════════════════════ -->
 <nav class="nav" id="nav" role="banner">
   <a href="#" class="nav-logo" aria-label="Riberastudio — inicio">
-    <!-- Logo claro sobre hero oscuro -->
-    <svg class="logo-oscuro" viewBox="0 0 883.8 163.18" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-      <text font-family="Georgia,'Times New Roman',serif"
-            font-weight="700" font-size="148.61"
-            fill="#FAFAF7" x="0" y="127.66">Ribera</text>
-      <text font-family="Georgia,'Times New Roman',serif"
-            font-weight="400" font-style="italic" font-size="148.61"
-            fill="#FAFAF7" x="477.34" y="127.66">studio</text>
-    </svg>
-    <!-- Logo azul sobre fondo claro -->
-    <svg class="logo-claro" viewBox="0 0 883.8 163.18" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-      <text font-family="Georgia,'Times New Roman',serif"
-            font-weight="700" font-size="148.61"
-            fill="#143A5A" x="0" y="127.66">Ribera</text>
-      <text font-family="Georgia,'Times New Roman',serif"
-            font-weight="400" font-style="italic" font-size="148.61"
-            fill="#143A5A" x="477.34" y="127.66">studio</text>
-    </svg>
+    <!-- Hero oscuro → logo blanco -->
+    <img class="logo-hero"
+         src="RIBERA_BLANCO.png"
+         alt="Riberastudio"
+         width="220" height="40"
+         style="height:24px;width:auto;">
+    <!-- Nav claro → logo azul -->
+    <img class="logo-light"
+         src="RIBERA_AZUL.png"
+         alt="Riberastudio"
+         width="220" height="40"
+         style="height:24px;width:auto;">
   </a>
-  <a href="#contacto" class="nav-contacto">Hablemos →</a>
+  <a href="#contacto" class="nav-cta">Hablemos →</a>
 </nav>
 
 <main>
 
-<!-- ═══════════════════════════════════════════════════════
+<!-- ══════════════════════════════════════════════════
      HERO
-════════════════════════════════════════════════════════ -->
+══════════════════════════════════════════════════ -->
 <section class="hero" id="hero" aria-labelledby="hero-h1">
 
-  <!-- Río SVG animado -->
   <svg class="hero-rio" viewBox="0 0 1440 900"
        preserveAspectRatio="xMidYMid slice"
        xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-    <!-- Curva principal — más gruesa, más baja -->
-    <path class="rio-path rio-path-1"
-      d="M -200 720 C 100 695 280 740 480 710 C 680 680 860 725 1060 698 C 1260 671 1380 705 1640 690"
-      stroke="#4F7C74" stroke-width="1.5" fill="none" opacity=".5"/>
-    <!-- Curva secundaria -->
-    <path class="rio-path rio-path-2"
-      d="M -200 690 C 150 662 330 710 530 678 C 730 646 910 694 1110 665 C 1310 636 1420 668 1640 655"
-      stroke="#4F7C74" stroke-width=".8" fill="none" opacity=".28"/>
-    <!-- Curva terciaria — más arriba, más tenue -->
-    <path class="rio-path rio-path-3"
-      d="M -200 650 C 200 620 400 668 600 635 C 800 602 1000 648 1200 618 C 1380 590 1450 620 1640 608"
-      stroke="#4F7C74" stroke-width=".5" fill="none" opacity=".15"/>
-    <!-- Reflejos -->
-    <path class="rio-path rio-path-2"
-      d="M -200 740 C 80 718 260 755 460 730 C 660 705 840 740 1040 718 C 1240 696 1390 722 1640 710"
+    <path class="rio-p rio-p-1"
+      d="M-200 715 C100 688 290 735 490 705 C690 675 870 718 1070 690 C1270 662 1390 698 1640 682"
+      stroke="#4F7C74" stroke-width="1.4" fill="none" opacity=".52"/>
+    <path class="rio-p rio-p-2"
+      d="M-200 685 C140 656 330 706 530 674 C730 642 910 688 1110 658 C1310 628 1420 662 1640 648"
+      stroke="#4F7C74" stroke-width=".8" fill="none" opacity=".3"/>
+    <path class="rio-p rio-p-3"
+      d="M-200 650 C180 618 370 668 570 636 C770 604 950 650 1150 620 C1350 590 1440 622 1640 608"
+      stroke="#4F7C74" stroke-width=".5" fill="none" opacity=".16"/>
+    <path class="rio-p rio-p-4"
+      d="M-200 745 C80 720 265 758 465 732 C665 706 845 742 1045 718 C1245 694 1390 724 1640 710"
       stroke="#FAFAF7" stroke-width=".4" fill="none" opacity=".06"/>
   </svg>
 
-  <!-- Títular enorme con reveal por línea -->
-  <h1 class="hero-titulo" id="hero-h1">
+  <h1 class="hero-h1" id="hero-h1">
     <span class="hl"><span>Presencia</span></span>
     <span class="hl"><span>digital con</span></span>
     <span class="hl"><span><em>identidad.</em></span></span>
@@ -816,76 +643,64 @@ footer {
       Diseñamos y desarrollamos sitios web para profesionales,
       emprendedores y proyectos que saben quiénes son.
     </p>
-    <p class="hero-eyebrow">
-      Estudio · Litoral, Argentina
-    </p>
+    <p class="hero-lugar">Litoral · Argentina</p>
   </div>
 
 </section>
 
-<!-- ═══════════════════════════════════════════════════════
-     MANIFESTO — invade el hero con clip-path
-════════════════════════════════════════════════════════ -->
+<!-- ══════════════════════════════════════════════════
+     MANIFESTO
+══════════════════════════════════════════════════ -->
 <section class="manifesto" aria-label="El estudio">
   <div class="manifesto-inner">
-
     <div class="manifesto-lateral fi">
-      <p class="manifesto-etiqueta">El estudio</p>
-      <p class="manifesto-claim">
+      <p class="m-etiqueta">El estudio</p>
+      <p class="m-claim">
         Hacemos pocas cosas.<br>
         <em>Las hacemos muy bien.</em>
       </p>
     </div>
-
-    <div class="manifesto-texto fi d2">
-      <p>
-        <strong>No trabajamos con plantillas ni con fórmulas.</strong>
-        Cada proyecto empieza por entender quién sos y qué necesitás decir.
-        El resultado es una presencia digital que se reconoce, genera confianza
-        y tiene sentido con el resto de lo que hacés.
-      </p>
-      <p>
-        Riberastudio nació del litoral argentino con una convicción simple:
-        la presencia digital de un proyecto tiene que ser tan cuidada como
-        el proyecto mismo. Usamos tecnología con criterio, no como un fin en sí mismo.
-      </p>
-      <p>
-        Trabajamos con un número acotado de proyectos a la vez.
-        Eso nos permite estar presentes en cada decisión,
-        desde el primer párrafo hasta el último píxel.
-      </p>
+    <div class="m-texto fi d2">
+      <p><strong>No trabajamos con plantillas ni con fórmulas.</strong>
+         Cada proyecto empieza por entender quién sos y qué necesitás decir.
+         El resultado es una presencia digital que se reconoce, genera confianza
+         y tiene sentido con el resto de lo que hacés.</p>
+      <p>Riberastudio nació del litoral argentino con una convicción simple:
+         la presencia digital de un proyecto tiene que ser tan cuidada como
+         el proyecto mismo. Usamos tecnología con criterio, no como un fin en sí mismo.</p>
+      <p>Trabajamos con un número acotado de proyectos a la vez
+         para poder estar presentes en cada decisión,
+         desde el primer párrafo hasta el último píxel.</p>
     </div>
-
   </div>
 </section>
 
-<!-- ═══════════════════════════════════════════════════════
-     SERVICIOS — tipografía enorme sobre negro
-════════════════════════════════════════════════════════ -->
+<!-- ══════════════════════════════════════════════════
+     SERVICIOS
+══════════════════════════════════════════════════ -->
 <section class="servicios" aria-labelledby="srv-label">
-  <div class="srv-bg-num" aria-hidden="true" id="srvNum">3</div>
+  <div class="srv-bgnum" id="srvNum" aria-hidden="true"></div>
   <div class="srv-inner">
     <div class="srv-header fi">
       <p class="srv-label" id="srv-label">Servicios</p>
       <p class="srv-intro">Todo lo que necesitás<br>para estar presente.</p>
     </div>
-
     <ul class="srv-lista" role="list">
-      <li class="srv-item fi d1" data-num="01">
+      <li class="srv-item fi d1">
         <span class="srv-nombre">Sitio web</span>
         <div class="srv-meta">
           <span class="srv-num">01</span>
           <span class="srv-desc">A medida, para durar,<br>fácil de actualizar.</span>
         </div>
       </li>
-      <li class="srv-item fi d2" data-num="02">
+      <li class="srv-item fi d2">
         <span class="srv-nombre">Landing page</span>
         <div class="srv-meta">
           <span class="srv-num">02</span>
           <span class="srv-desc">Un objetivo.<br>Sin distracciones.</span>
         </div>
       </li>
-      <li class="srv-item fi d3" data-num="03">
+      <li class="srv-item fi d3">
         <span class="srv-nombre">Identidad digital</span>
         <div class="srv-meta">
           <span class="srv-num">03</span>
@@ -893,7 +708,6 @@ footer {
         </div>
       </li>
     </ul>
-
     <p class="srv-detalle fi d4">
       <b>Dominio y hosting incluidos.</b>
       Cambios ilimitados en el plan mensual.
@@ -902,46 +716,46 @@ footer {
   </div>
 </section>
 
-<!-- ═══════════════════════════════════════════════════════
-     PROCESO — cards horizontales con línea verde
-════════════════════════════════════════════════════════ -->
+<!-- ══════════════════════════════════════════════════
+     PROCESO
+══════════════════════════════════════════════════ -->
 <section class="proceso" aria-labelledby="proc-label">
   <div class="proceso-header fi">
-    <p class="proceso-label" id="proc-label">Cómo trabajamos</p>
-    <p class="proceso-claim">Cuatro momentos.<br>Sin sorpresas en el medio.</p>
+    <p class="proc-label" id="proc-label">Cómo trabajamos</p>
+    <p class="proc-claim">Cuatro momentos.<br>Sin sorpresas en el medio.</p>
   </div>
   <div class="proceso-track">
-    <div class="paso fi d1">
+    <div class="paso fi">
       <span class="paso-n">I</span>
       <h3 class="paso-titulo">Escucha</h3>
       <p class="paso-desc">Entendemos tu proyecto, tu contexto y tu público antes de proponer cualquier cosa.</p>
     </div>
-    <div class="paso fi d2">
+    <div class="paso fi d1">
       <span class="paso-n">II</span>
       <h3 class="paso-titulo">Definición</h3>
       <p class="paso-desc">Acordamos estructura, contenido y objetivos. Nada se diseña antes de que el fondo esté claro.</p>
     </div>
-    <div class="paso fi d3">
+    <div class="paso fi d2">
       <span class="paso-n">III</span>
       <h3 class="paso-titulo">Diseño</h3>
       <p class="paso-desc">Cada decisión visual tiene una razón. Revisiones en cada etapa. No hay sorpresas al final.</p>
     </div>
-    <div class="paso fi d4">
+    <div class="paso fi d3">
       <span class="paso-n">IV</span>
       <h3 class="paso-titulo">Entrega</h3>
-      <p class="paso-desc">Tu sitio en el aire en menos de tres semanas. Después del lanzamiento, seguimos disponibles.</p>
+      <p class="paso-desc">Tu sitio en el aire en menos de tres semanas. Seguimos disponibles después del lanzamiento.</p>
     </div>
   </div>
 </section>
 
-<!-- ═══════════════════════════════════════════════════════
+<!-- ══════════════════════════════════════════════════
      FAQ
-════════════════════════════════════════════════════════ -->
+══════════════════════════════════════════════════ -->
 <section class="faq" aria-labelledby="faq-label">
   <div class="faq-inner">
     <div class="faq-header fi">
       <p class="faq-label" id="faq-label">FAQ</p>
-      <p class="faq-claim">Las preguntas que<br>nos hacen seguido.</p>
+      <p class="faq-claim">Las preguntas<br>que nos hacen seguido.</p>
     </div>
     <ul class="faq-lista" role="list">
       <li class="faq-item fi">
@@ -950,7 +764,7 @@ footer {
           <span class="faq-plus" aria-hidden="true"></span>
         </button>
         <div class="faq-resp" role="region">
-          <p class="faq-resp-p">Un sitio web completo está listo en menos de tres semanas desde que acordamos el contenido. Una landing puede salir antes. Siempre definimos plazos reales antes de arrancar, sin promesas vacías.</p>
+          <p class="faq-resp-p">Un sitio web completo está listo en menos de tres semanas desde que acordamos el contenido. Una landing puede salir antes. Siempre definimos plazos reales antes de arrancar.</p>
         </div>
       </li>
       <li class="faq-item fi d1">
@@ -968,7 +782,7 @@ footer {
           <span class="faq-plus" aria-hidden="true"></span>
         </button>
         <div class="faq-resp" role="region">
-          <p class="faq-resp-p">Sí. Nos encargamos de todo para que no tengas que lidiar con tecnicismos. Tu sitio queda andando desde el primer día sin que tengas que contratar nada por separado.</p>
+          <p class="faq-resp-p">Sí. Nos encargamos de todo para que no tengas que lidiar con tecnicismos. Tu sitio queda andando desde el primer día sin contratar nada por separado.</p>
         </div>
       </li>
       <li class="faq-item fi d3">
@@ -993,26 +807,21 @@ footer {
   </div>
 </section>
 
-<!-- ═══════════════════════════════════════════════════════
+<!-- ══════════════════════════════════════════════════
      CONTACTO
-════════════════════════════════════════════════════════ -->
+══════════════════════════════════════════════════ -->
 <section class="contacto" id="contacto" aria-labelledby="cont-h2">
-
-  <!-- El río desemboca aquí -->
   <svg class="contacto-rio" viewBox="0 0 1440 800"
        preserveAspectRatio="xMidYMax meet"
        xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-    <path d="M -200 300 C 200 260 500 330 800 295 C 1100 260 1300 310 1640 285"
-          stroke="#4F7C74" stroke-width=".8" fill="none" opacity=".2"/>
-    <path d="M -200 350 C 180 308 480 378 780 342 C 1080 306 1300 358 1640 332"
-          stroke="#4F7C74" stroke-width=".6" fill="none" opacity=".15"/>
-    <path d="M -200 400 C 160 355 460 428 760 390 C 1060 352 1300 406 1640 380"
-          stroke="#4F7C74" stroke-width=".5" fill="none" opacity=".12"/>
-    <!-- Forma que llena — la orilla -->
-    <path d="M -200 600 C 200 560 500 610 800 582 C 1100 554 1300 595 1640 570 L 1640 900 L -200 900 Z"
+    <path d="M-200 300 C200 260 500 328 800 294 C1100 260 1300 308 1640 284"
+          stroke="#4F7C74" stroke-width=".8" fill="none" opacity=".18"/>
+    <path d="M-200 355 C180 310 480 378 780 342 C1080 306 1300 356 1640 330"
+          stroke="#4F7C74" stroke-width=".6" fill="none" opacity=".13"/>
+    <path d="M-200 600 C200 558 500 608 800 580 C1100 552 1300 594 1640 568 L1640 900 L-200 900Z"
           fill="#4F7C74" opacity=".07"/>
-    <path d="M -200 680 C 180 648 480 692 780 665 C 1080 638 1300 672 1640 650 L 1640 900 L -200 900 Z"
-          fill="#4F7C74" opacity=".06"/>
+    <path d="M-200 680 C180 645 480 690 780 664 C1080 638 1300 670 1640 648 L1640 900 L-200 900Z"
+          fill="#4F7C74" opacity=".055"/>
   </svg>
 
   <div class="contacto-inner">
@@ -1023,133 +832,114 @@ footer {
     <div class="contacto-fila fi d2">
       <a href="mailto:riberaestudioarg@gmail.com" class="contacto-email">
         riberaestudioarg@gmail.com
-        <span class="contacto-email-flecha" aria-hidden="true">↗</span>
+        <span class="e-flecha" aria-hidden="true">↗</span>
       </a>
       <div class="contacto-social">
         <a href="https://instagram.com/riberastudio_"
-           class="contacto-ig" target="_blank" rel="noopener">
-          @riberastudio_
-        </a>
-        <p class="contacto-nota">Litoral, Argentina</p>
+           class="c-ig" target="_blank" rel="noopener">@riberastudio_</a>
+        <p class="c-nota">Litoral, Argentina</p>
       </div>
     </div>
   </div>
-
 </section>
+
 </main>
 
-<!-- ═══════════════════════════════════════════════════════
+<!-- ══════════════════════════════════════════════════
      FOOTER
-════════════════════════════════════════════════════════ -->
+══════════════════════════════════════════════════ -->
 <footer role="contentinfo">
   <div class="footer-inner">
-    <div class="footer-logo" aria-label="Riberastudio">
-      <svg viewBox="0 0 883.8 163.18" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-        <text font-family="Georgia,'Times New Roman',serif"
-              font-weight="700" font-size="148.61"
-              fill="#FAFAF7" x="0" y="127.66">Ribera</text>
-        <text font-family="Georgia,'Times New Roman',serif"
-              font-weight="400" font-style="italic" font-size="148.61"
-              fill="#FAFAF7" x="477.34" y="127.66">studio</text>
-      </svg>
+    <div class="footer-logo">
+      <img src="RIBERA_BLANCO.png"
+           alt="Riberastudio"
+           width="180" height="33"
+           style="height:18px;width:auto;opacity:.45;">
     </div>
     <p class="footer-copy">© 2025 Riberastudio. Litoral, Argentina.</p>
   </div>
 </footer>
 
-<!-- ═══════════════════════════════════════════════════════
+<!-- ══════════════════════════════════════════════════
      JS
-════════════════════════════════════════════════════════ -->
+══════════════════════════════════════════════════ -->
 <script>
-/* ─── Cursor personalizado ─────────────────────────── */
+/* ── Cursor ──────────────────────────────────── */
 const dot  = document.getElementById('cursor-dot');
 const ring = document.getElementById('cursor-ring');
 let cx = 0, cy = 0, rx = 0, ry = 0;
-
 document.addEventListener('mousemove', e => { cx = e.clientX; cy = e.clientY; });
-
-(function loopCursor() {
-  rx += (cx - rx) * .12;
-  ry += (cy - ry) * .12;
+(function loop() {
+  rx += (cx - rx) * .11;
+  ry += (cy - ry) * .11;
   dot.style.transform  = `translate(calc(${cx}px - 50%), calc(${cy}px - 50%))`;
   ring.style.transform = `translate(calc(${rx}px - 50%), calc(${ry}px - 50%))`;
-  requestAnimationFrame(loopCursor);
+  requestAnimationFrame(loop);
 })();
 
+/* Cursor: zona oscura */
+const zonaOscura = [
+  document.getElementById('hero'),
+  document.querySelector('.servicios'),
+  document.querySelector('.contacto'),
+  document.querySelector('footer')
+];
+zonaOscura.forEach(z => {
+  if (!z) return;
+  z.addEventListener('mouseenter', () => document.body.classList.add('cur-dark'));
+  z.addEventListener('mouseleave', () => document.body.classList.remove('cur-dark'));
+});
 document.querySelectorAll('a,button,.srv-item').forEach(el => {
-  el.addEventListener('mouseenter', () => document.body.classList.add('cursor-hover'));
-  el.addEventListener('mouseleave', () => document.body.classList.remove('cursor-hover'));
+  el.addEventListener('mouseenter', () => document.body.classList.add('cur-h'));
+  el.addEventListener('mouseleave', () => document.body.classList.remove('cur-h'));
 });
 
-/* ─── Nav scroll ───────────────────────────────────── */
+/* ── Nav ─────────────────────────────────────── */
 const nav  = document.getElementById('nav');
 const hero = document.getElementById('hero');
 new IntersectionObserver(([e]) => {
   nav.classList.toggle('sc', !e.isIntersecting);
 }, { threshold: .05 }).observe(hero);
 
-/* ─── Parallax hero suavísimo ──────────────────────── */
-const heroTitulo = document.querySelector('.hero-titulo');
-let pTick = false;
-window.addEventListener('scroll', () => {
-  if (!pTick) {
-    requestAnimationFrame(() => {
-      const y = window.scrollY;
-      if (y < window.innerHeight * 1.2) {
-        heroTitulo.style.transform = `translateY(${y * .08}px)`;
-      }
-      pTick = false;
-    });
-    pTick = true;
-  }
-}, { passive: true });
-
-/* ─── Mouse parallax en hero ───────────────────────── */
-let mx = 0, my = 0, hmx = 0, hmy = 0;
+/* ── Parallax hero ───────────────────────────── */
+const heroH1 = document.querySelector('.hero-h1');
+let mx = 0, my = 0, phx = 0, phy = 0;
 hero.addEventListener('mousemove', e => {
   const r = hero.getBoundingClientRect();
-  mx = ((e.clientX - r.left) / r.width  - .5) * 14;
-  my = ((e.clientY - r.top)  / r.height - .5) * 8;
+  mx = ((e.clientX - r.left) / r.width  - .5) * 16;
+  my = ((e.clientY - r.top)  / r.height - .5) * 9;
 });
 hero.addEventListener('mouseleave', () => { mx = 0; my = 0; });
 
+let scrollY = 0;
+window.addEventListener('scroll', () => { scrollY = window.scrollY; }, { passive: true });
+
 (function loopHero() {
-  hmx += (mx - hmx) * .05;
-  hmy += (my - hmy) * .05;
-  const scrollY = window.scrollY;
-  if (scrollY < window.innerHeight) {
-    heroTitulo.style.transform =
-      `translate(${hmx}px, calc(${hmy}px + ${scrollY * .08}px))`;
-  }
+  phx += (mx - phx) * .055;
+  phy += (my - phy) * .055;
+  const py = scrollY < window.innerHeight ? scrollY * .09 : 0;
+  heroH1.style.transform = `translate(${phx}px, calc(${phy}px + ${py}px))`;
   requestAnimationFrame(loopHero);
 })();
 
-/* ─── Número de fondo en servicios ────────────────── */
+/* ── Número de fondo servicios ───────────────── */
 const srvNum   = document.getElementById('srvNum');
 const srvItems = document.querySelectorAll('.srv-item');
 srvItems.forEach((item, i) => {
   item.addEventListener('mouseenter', () => {
-    srvNum.textContent = String(i + 1).padStart(2, '0');
+    srvNum.textContent = String(i + 1).padStart(2,'0');
     srvNum.style.opacity = '1';
   });
-  item.addEventListener('mouseleave', () => {
-    srvNum.style.opacity = '0';
-  });
+  item.addEventListener('mouseleave', () => { srvNum.style.opacity = '0'; });
 });
 
-/* ─── Scroll reveal ────────────────────────────────── */
-const fiEls = document.querySelectorAll('.fi, .reveal-wrap, .paso');
-const fiObs = new IntersectionObserver(entries => {
-  entries.forEach(e => {
-    if (e.isIntersecting) {
-      e.target.classList.add('v');
-      fiObs.unobserve(e.target);
-    }
-  });
+/* ── Scroll reveal ───────────────────────────── */
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('v'); obs.unobserve(e.target); } });
 }, { threshold: .07 });
-fiEls.forEach(el => fiObs.observe(el));
+document.querySelectorAll('.fi, .paso').forEach(el => obs.observe(el));
 
-/* ─── FAQ acordeón ─────────────────────────────────── */
+/* ── FAQ ─────────────────────────────────────── */
 document.querySelectorAll('.faq-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     const item = btn.closest('.faq-item');
@@ -1158,10 +948,7 @@ document.querySelectorAll('.faq-btn').forEach(btn => {
       i.classList.remove('open');
       i.querySelector('.faq-btn').setAttribute('aria-expanded','false');
     });
-    if (!open) {
-      item.classList.add('open');
-      btn.setAttribute('aria-expanded','true');
-    }
+    if (!open) { item.classList.add('open'); btn.setAttribute('aria-expanded','true'); }
   });
 });
 </script>
