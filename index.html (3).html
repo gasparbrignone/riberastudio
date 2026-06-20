@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Riberastudio — Presencia digital para proyectos con identidad. Litoral, Argentina.">
+<title>Riberastudio — Presencia digital con identidad</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=Inter:wght@300;400&display=swap" rel="stylesheet">
+<style>
+
+/* ─── RESET & RAÍZ ─────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --azul:    #143A5A;
+  --verde:   #4F7C74;
+  --blanco:  #FAFAF7;
+  --negro:   #171717;
+  --gris:    #717171;
+  --gris-l:  #B8B8B4;
+  --borde:   rgba(23,23,23,0.09);
+  --borde-c: rgba(250,250,247,0.13);
+  --max:     1120px;
+  --px:      clamp(1.5rem, 5vw, 5rem);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+html { scroll-behavior: smooth; font-size: 16px; }
+
+body {
+  background: var(--blanco);
+  color: var(--negro);
+  font-family: 'Inter', sans-serif;
+  font-weight: 300;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* Grano sutil global */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: .022;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23g)'/%3E%3C/svg%3E");
+  background-size: 200px 200px;
+}
+
+/* ─── NAV ───────────────────────────────────────────────────── */
+.nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 200;
+  padding: 1.4rem var(--px);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: background .4s ease, border-color .4s ease;
+  border-bottom: 1px solid transparent;
+}
+.nav.scrolled {
+  background: rgba(250,250,247,.92);
+  backdrop-filter: blur(14px);
+  border-color: var(--borde);
+}
+.nav.hero-zone { border-color: transparent; }
+
+.nav-logo svg { height: 22px; width: auto; display: block; }
+.nav-logo-hero { display: block; }
+.nav-logo-light { display: none; }
+.nav.scrolled .nav-logo-hero { display: none; }
+.nav.scrolled .nav-logo-light { display: block; }
+
+.nav-cta {
+  font-size: .75rem;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--blanco);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(250,250,247,.4);
+  padding-bottom: 1px;
+  transition: border-color .25s, color .25s;
+}
+.nav.scrolled .nav-cta { color: var(--azul); border-color: var(--azul); }
+.nav-cta:hover { border-color: currentColor; }
+
+/* ─── HERO ──────────────────────────────────────────────────── */
+.hero {
+  min-height: 100svh;
+  background: var(--azul);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  overflow: hidden;
+  padding: 0 var(--px) clamp(3.5rem, 7vw, 6rem);
+}
+
+/* Línea del río — se dibuja onLoad */
+.rio-hero {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+.rio-hero-path {
+  stroke-dasharray: 2000;
+  stroke-dashoffset: 2000;
+  animation: dibuja-rio 1.8s var(--ease-out-expo) .3s forwards;
+}
+@keyframes dibuja-rio {
+  to { stroke-dashoffset: 0; }
+}
+
+.hero-inner {
+  position: relative;
+  z-index: 2;
+  max-width: var(--max);
+  margin: 0 auto;
+  width: 100%;
+}
+
+.hero-eyebrow {
+  font-size: .7rem;
+  letter-spacing: .25em;
+  text-transform: uppercase;
+  color: var(--verde);
+  font-weight: 400;
+  margin-bottom: 2.5rem;
+  display: flex;
+  align-items: center;
+  gap: .9rem;
+  opacity: 0;
+  animation: sube .8s var(--ease-out-expo) 1.2s forwards;
+}
+.hero-eyebrow::before {
+  content: '';
+  display: block;
+  width: 28px;
+  height: 1px;
+  background: var(--verde);
+  flex-shrink: 0;
+}
+
+.hero-titulo {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 300;
+  font-size: clamp(3.8rem, 8.5vw, 8.5rem);
+  line-height: 1;
+  letter-spacing: -.025em;
+  color: var(--blanco);
+  margin-bottom: 3rem;
+  overflow: hidden;
+}
+
+/* Cada línea del título aparece desde abajo */
+.hero-titulo .linea {
+  display: block;
+  overflow: hidden;
+}
+.hero-titulo .linea span {
+  display: block;
+  transform: translateY(110%);
+  animation: sube-linea .9s var(--ease-out-expo) forwards;
+}
+.hero-titulo .linea:nth-child(1) span { animation-delay: .5s; }
+.hero-titulo .linea:nth-child(2) span { animation-delay: .65s; }
+.hero-titulo .linea:nth-child(3) span { animation-delay: .8s; }
+.hero-titulo em {
+  font-style: italic;
+  color: rgba(250,250,247,.45);
+}
+
+@keyframes sube-linea {
+  to { transform: translateY(0); }
+}
+@keyframes sube {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.hero-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  padding-top: 2rem;
+  border-top: 1px solid var(--borde-c);
+  opacity: 0;
+  animation: sube .8s var(--ease-out-expo) 1.4s forwards;
+}
+.hero-sub {
+  font-size: clamp(.82rem, 1.2vw, .92rem);
+  color: rgba(250,250,247,.5);
+  max-width: 320px;
+  line-height: 1.75;
+}
+.hero-link {
+  font-size: .78rem;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--blanco);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  flex-shrink: 0;
+  transition: gap .3s var(--ease-out-expo);
+}
+.hero-link:hover { gap: 1.2rem; }
+.hero-link-bar {
+  display: block;
+  width: 36px;
+  height: 1px;
+  background: var(--blanco);
+  transition: width .3s var(--ease-out-expo);
+}
+.hero-link:hover .hero-link-bar { width: 56px; }
+
+/* Paralax leve en el título del hero */
+.hero-parallax { will-change: transform; }
+
+/* ─── RÍO LATERAL — hilo que conecta secciones ─────────────── */
+.rio-lateral {
+  position: absolute;
+  left: clamp(1rem, 2.5vw, 2.5rem);
+  top: 0; bottom: 0;
+  width: 1px;
+  pointer-events: none;
+  overflow: visible;
+}
+.rio-lateral svg {
+  position: absolute;
+  left: 0; top: 0;
+  width: 60px;
+  height: 100%;
+  overflow: visible;
+}
+.rio-lateral-path {
+  stroke-dasharray: 3000;
+  stroke-dashoffset: 3000;
+  transition: stroke-dashoffset 0s;
+}
+.rio-lateral-path.animating {
+  transition: stroke-dashoffset 2.5s cubic-bezier(.4,0,.2,1);
+  stroke-dashoffset: 0;
+}
+
+/* ─── SECCIONES BASE ────────────────────────────────────────── */
+.seccion {
+  position: relative;
+  padding: clamp(5rem, 10vw, 9rem) var(--px);
+}
+.seccion-inner {
+  max-width: var(--max);
+  margin: 0 auto;
+}
+
+/* ─── FADE-IN AL SCROLL ─────────────────────────────────────── */
+.fi {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity .9s var(--ease-out-expo), transform .9s var(--ease-out-expo);
+}
+.fi.v { opacity: 1; transform: none; }
+.fi-d1 { transition-delay: .1s; }
+.fi-d2 { transition-delay: .2s; }
+.fi-d3 { transition-delay: .3s; }
+
+/* ─── PROPUESTA ─────────────────────────────────────────────── */
+.propuesta {
+  background: var(--blanco);
+  padding-left: calc(var(--px) + 3rem);
+}
+.propuesta-label {
+  font-size: .68rem;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: var(--verde);
+  font-weight: 400;
+  margin-bottom: 3rem;
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+}
+.propuesta-label::before {
+  content: '';
+  display: block;
+  width: 20px;
+  height: 1px;
+  background: var(--verde);
+}
+.propuesta-p1 {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 300;
+  font-size: clamp(1.6rem, 3vw, 2.4rem);
+  line-height: 1.38;
+  color: var(--negro);
+  max-width: 700px;
+  margin-bottom: 2.5rem;
+}
+.propuesta-p2 {
+  font-size: clamp(.88rem, 1.2vw, .98rem);
+  color: var(--gris);
+  max-width: 520px;
+  line-height: 1.8;
+  border-left: 1px solid var(--verde);
+  padding-left: 1.5rem;
+}
+
+/* ─── SERVICIOS ─────────────────────────────────────────────── */
+.servicios { background: var(--blanco); }
+
+.srv-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 0;
+  padding-bottom: 1.5rem;
+  border-bottom: 1.5px solid var(--negro);
+}
+.srv-label {
+  font-size: .68rem;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: var(--gris);
+  font-weight: 400;
+}
+.srv-nota {
+  font-size: .8rem;
+  color: var(--gris-l);
+  text-align: right;
+  max-width: 280px;
+  line-height: 1.6;
+}
+
+.srv-lista { list-style: none; }
+
+.srv-item {
+  border-bottom: 1px solid var(--borde);
+  padding: 1.6rem 0;
+  display: grid;
+  grid-template-columns: 2.5rem 1fr auto;
+  align-items: baseline;
+  gap: 1.5rem;
+  cursor: default;
+  transition: background .2s;
+  position: relative;
+  overflow: hidden;
+}
+.srv-item::after {
+  content: '';
+  position: absolute;
+  left: 0; bottom: 0;
+  height: 1px;
+  width: 0;
+  background: var(--verde);
+  transition: width .5s var(--ease-out-expo);
+}
+.srv-item:hover::after { width: 100%; }
+
+.srv-n {
+  font-size: .68rem;
+  color: var(--verde);
+  letter-spacing: .1em;
+  font-weight: 400;
+}
+.srv-nombre {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 400;
+  font-size: clamp(1.3rem, 2.2vw, 1.75rem);
+  color: var(--negro);
+  transition: color .25s;
+}
+.srv-item:hover .srv-nombre { color: var(--azul); }
+.srv-desc {
+  font-size: .8rem;
+  color: var(--gris);
+  text-align: right;
+  max-width: 240px;
+  line-height: 1.6;
+}
+.srv-detalle {
+  margin-top: 2.5rem;
+  font-size: .78rem;
+  color: var(--gris-l);
+  line-height: 1.8;
+  max-width: 560px;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--borde);
+}
+.srv-detalle strong {
+  color: var(--verde);
+  font-weight: 400;
+}
+
+/* ─── PROCESO ───────────────────────────────────────────────── */
+.proceso { background: var(--blanco); }
+
+.proc-header {
+  margin-bottom: 4rem;
+}
+.proc-label {
+  font-size: .68rem;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: var(--gris);
+  font-weight: 400;
+  margin-bottom: .5rem;
+}
+.proc-intro {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 300;
+  font-style: italic;
+  font-size: clamp(1.2rem, 2vw, 1.6rem);
+  color: var(--gris);
+}
+
+.proc-lista { list-style: none; border-top: 1px solid var(--borde); }
+.proc-item {
+  border-bottom: 1px solid var(--borde);
+  padding: 2rem 0;
+  display: grid;
+  grid-template-columns: 2rem 1fr 1fr;
+  gap: 2rem;
+  align-items: start;
+}
+.proc-n {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 1.1rem;
+  color: var(--verde);
+  line-height: 1;
+  padding-top: .15rem;
+}
+.proc-titulo {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 400;
+  font-size: clamp(1.1rem, 1.6vw, 1.35rem);
+  color: var(--negro);
+  line-height: 1.2;
+}
+.proc-desc {
+  font-size: .83rem;
+  color: var(--gris);
+  line-height: 1.75;
+}
+
+/* ─── FAQ ───────────────────────────────────────────────────── */
+.faq { background: var(--azul); padding: clamp(5rem, 10vw, 9rem) var(--px); }
+.faq-inner { max-width: var(--max); margin: 0 auto; }
+
+.faq-label {
+  font-size: .68rem;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: var(--verde);
+  font-weight: 400;
+  margin-bottom: 3.5rem;
+}
+
+.faq-lista { list-style: none; border-top: 1px solid var(--borde-c); }
+.faq-item { border-bottom: 1px solid var(--borde-c); }
+.faq-btn {
+  width: 100%;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 1.75rem 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 2rem;
+  text-align: left;
+}
+.faq-q {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 400;
+  font-size: clamp(1rem, 1.6vw, 1.25rem);
+  color: var(--blanco);
+  line-height: 1.3;
+}
+.faq-icono {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  position: relative;
+}
+.faq-icono::before,
+.faq-icono::after {
+  content: '';
+  position: absolute;
+  background: var(--verde);
+  border-radius: 2px;
+  transition: transform .35s var(--ease-out-expo), opacity .25s;
+}
+.faq-icono::before { width: 100%; height: 1px; top: 50%; left: 0; transform: translateY(-50%); }
+.faq-icono::after  { width: 1px; height: 100%; left: 50%; top: 0; transform: translateX(-50%); }
+.faq-item.open .faq-icono::after { transform: translateX(-50%) rotate(90deg); opacity: 0; }
+
+.faq-resp {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height .5s var(--ease-out-expo);
+}
+.faq-resp-inner {
+  padding-bottom: 1.75rem;
+  font-size: .875rem;
+  color: rgba(250,250,247,.5);
+  line-height: 1.8;
+  max-width: 580px;
+}
+.faq-item.open .faq-resp { max-height: 300px; }
+
+/* ─── CONTACTO ──────────────────────────────────────────────── */
+.contacto {
+  background: var(--azul);
+  padding: clamp(6rem, 12vw, 11rem) var(--px);
+  position: relative;
+  overflow: hidden;
+}
+.contacto-inner {
+  max-width: var(--max);
+  margin: 0 auto;
+  position: relative;
+  z-index: 2;
+}
+
+/* El río desemboca aquí */
+.rio-desemboca {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  opacity: .18;
+}
+
+.contacto-label {
+  font-size: .68rem;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: var(--verde);
+  font-weight: 400;
+  margin-bottom: 2.5rem;
+}
+.contacto-titulo {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 300;
+  font-size: clamp(3rem, 7vw, 7rem);
+  line-height: 1.02;
+  letter-spacing: -.02em;
+  color: var(--blanco);
+  margin-bottom: 3rem;
+}
+.contacto-titulo em {
+  font-style: italic;
+  color: rgba(250,250,247,.4);
+}
+
+.contacto-links {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.contacto-email {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 300;
+  font-size: clamp(1.2rem, 2.2vw, 1.8rem);
+  color: var(--blanco);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(250,250,247,.2);
+  padding-bottom: .3rem;
+  display: inline-flex;
+  align-items: center;
+  gap: .75rem;
+  transition: border-color .25s, gap .3s var(--ease-out-expo);
+}
+.contacto-email:hover { border-color: var(--blanco); gap: 1.2rem; }
+.contacto-ig {
+  font-size: .8rem;
+  letter-spacing: .1em;
+  color: rgba(250,250,247,.4);
+  text-decoration: none;
+  transition: color .25s;
+}
+.contacto-ig:hover { color: rgba(250,250,247,.75); }
+.contacto-nota {
+  margin-top: 3rem;
+  font-size: .75rem;
+  color: rgba(250,250,247,.25);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+/* ─── FOOTER ────────────────────────────────────────────────── */
+footer {
+  background: var(--negro);
+  padding: 2rem var(--px);
+  border-top: 1px solid rgba(250,250,247,.06);
+}
+.footer-inner {
+  max-width: var(--max);
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+.footer-logo svg { height: 18px; width: auto; opacity: .5; }
+.footer-copy {
+  font-size: .72rem;
+  color: rgba(250,250,247,.2);
+  letter-spacing: .05em;
+}
+
+/* ─── RESPONSIVE ────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .propuesta { padding-left: var(--px); }
+  .srv-item { grid-template-columns: 2rem 1fr; }
+  .srv-desc { display: none; }
+  .proc-item { grid-template-columns: 1.5rem 1fr; }
+  .proc-desc { grid-column: 2; }
+  .hero-meta { flex-direction: column; align-items: flex-start; gap: 1.5rem; }
+  .rio-lateral { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    transition-duration: .01ms !important;
+  }
+}
+
+</style>
+</head>
+<body>
+
+<!-- ═══ NAV ════════════════════════════════════════════════════ -->
+<nav class="nav hero-zone" id="nav" role="banner">
+  <a href="#" class="nav-logo" aria-label="Riberastudio — inicio">
+
+    <!-- Logo claro para hero oscuro -->
+    <svg class="nav-logo-hero" viewBox="0 0 884 163" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <text font-family="Georgia,'Times New Roman',serif" font-weight="700" font-size="149" fill="#FAFAF7" x="0" y="128">Ribera</text>
+      <text font-family="Georgia,'Times New Roman',serif" font-weight="400" font-style="italic" font-size="149" fill="#FAFAF7" x="477" y="128">studio</text>
+    </svg>
+
+    <!-- Logo azul para fondo claro -->
+    <svg class="nav-logo-light" viewBox="0 0 884 163" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <text font-family="Georgia,'Times New Roman',serif" font-weight="700" font-size="149" fill="#143A5A" x="0" y="128">Ribera</text>
+      <text font-family="Georgia,'Times New Roman',serif" font-weight="400" font-style="italic" font-size="149" fill="#143A5A" x="477" y="128">studio</text>
+    </svg>
+
+  </a>
+  <a href="#contacto" class="nav-cta">Hablemos →</a>
+</nav>
+
+<main>
+
+<!-- ═══ HERO ═══════════════════════════════════════════════════ -->
+<section class="hero" aria-labelledby="hero-h1" id="hero">
+
+  <!-- Línea del río que se dibuja al cargar -->
+  <svg class="rio-hero" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice"
+       xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <path class="rio-hero-path"
+      d="M -100 580
+         C 200 560, 350 610, 520 570
+         C 700 530, 860 590, 1060 555
+         C 1260 520, 1380 560, 1540 545"
+      stroke="#4F7C74" stroke-width="1.2" fill="none" opacity=".55"/>
+    <path class="rio-hero-path"
+      d="M -100 610
+         C 180 590, 340 645, 510 605
+         C 690 565, 860 620, 1060 588
+         C 1260 556, 1380 590, 1540 578"
+      stroke="#4F7C74" stroke-width=".7" fill="none" opacity=".3"
+      style="animation-delay: .15s"/>
+    <path class="rio-hero-path"
+      d="M -100 550
+         C 220 528, 380 578, 550 538
+         C 720 498, 880 558, 1080 524
+         C 1280 490, 1400 530, 1540 516"
+      stroke="#4F7C74" stroke-width=".5" fill="none" opacity=".2"
+      style="animation-delay: .3s"/>
+  </svg>
+
+  <div class="hero-inner hero-parallax" id="heroParallax">
+    <p class="hero-eyebrow" aria-label="Estudio de presencia digital, Litoral Argentina">
+      Estudio de presencia digital · Litoral, Argentina
+    </p>
+
+    <h1 class="hero-titulo" id="hero-h1">
+      <span class="linea"><span>Presencia digital</span></span>
+      <span class="linea"><span>para proyectos</span></span>
+      <span class="linea"><span>con <em>identidad.</em></span></span>
+    </h1>
+
+    <div class="hero-meta">
+      <p class="hero-sub">
+        Diseñamos y desarrollamos sitios web para profesionales
+        y emprendedores que saben quiénes son.
+      </p>
+      <a href="#contacto" class="hero-link" aria-label="Hablemos de tu proyecto">
+        <span class="hero-link-bar" aria-hidden="true"></span>
+        Hablemos de tu proyecto
+      </a>
+    </div>
+  </div>
+
+</section>
+
+<!-- ═══ PROPUESTA ══════════════════════════════════════════════ -->
+<section class="seccion propuesta" aria-label="Quiénes somos">
+  <div class="seccion-inner">
+    <p class="propuesta-label fi">El estudio</p>
+    <p class="propuesta-p1 fi fi-d1">
+      No trabajamos con plantillas ni con fórmulas.
+      Cada proyecto empieza por entender quién sos
+      y qué necesitás decir.
+    </p>
+    <p class="propuesta-p2 fi fi-d2">
+      Riberastudio nació del litoral argentino con una convicción simple:
+      la presencia digital de un proyecto tiene que ser tan cuidada
+      como el proyecto mismo. Usamos tecnología con criterio, no como fin en sí mismo.
+    </p>
+  </div>
+</section>
+
+<!-- ═══ SERVICIOS ══════════════════════════════════════════════ -->
+<section class="seccion servicios" aria-labelledby="srv-label" id="servicios">
+  <div class="seccion-inner">
+    <div class="srv-header fi">
+      <p class="srv-label" id="srv-label">Servicios</p>
+      <p class="srv-nota">Todo lo que necesitás para estar presente en la web.</p>
+    </div>
+
+    <ul class="srv-lista" role="list">
+      <li class="srv-item fi fi-d1">
+        <span class="srv-n" aria-hidden="true">01</span>
+        <span class="srv-nombre">Sitio web</span>
+        <span class="srv-desc">A medida, para durar,<br>fácil de actualizar.</span>
+      </li>
+      <li class="srv-item fi fi-d2">
+        <span class="srv-n" aria-hidden="true">02</span>
+        <span class="srv-nombre">Landing page</span>
+        <span class="srv-desc">Un objetivo. Sin<br>distracciones.</span>
+      </li>
+      <li class="srv-item fi fi-d3">
+        <span class="srv-n" aria-hidden="true">03</span>
+        <span class="srv-nombre">Identidad digital</span>
+        <span class="srv-desc">Coherencia en todos<br>los puntos de contacto.</span>
+      </li>
+    </ul>
+
+    <p class="srv-detalle fi">
+      <strong>Dominio y hosting incluidos.</strong>
+      Cambios ilimitados en el plan de mantenimiento mensual.
+      Entrega en menos de tres semanas.
+    </p>
+  </div>
+</section>
+
+<!-- ═══ PROCESO ════════════════════════════════════════════════ -->
+<section class="seccion proceso" aria-labelledby="proc-label">
+  <div class="seccion-inner">
+    <div class="proc-header fi">
+      <p class="proc-label" id="proc-label">Cómo trabajamos</p>
+      <p class="proc-intro">Cuatro momentos. Sin sorpresas en el medio.</p>
+    </div>
+
+    <ul class="proc-lista" role="list">
+      <li class="proc-item fi">
+        <span class="proc-n" aria-hidden="true">I</span>
+        <span class="proc-titulo">Escucha</span>
+        <span class="proc-desc">Entendemos tu proyecto, tu contexto y tu público antes de proponer cualquier cosa.</span>
+      </li>
+      <li class="proc-item fi fi-d1">
+        <span class="proc-n" aria-hidden="true">II</span>
+        <span class="proc-titulo">Definición</span>
+        <span class="proc-desc">Acordamos estructura, contenido y objetivos. Nada se diseña antes de que el fondo esté claro.</span>
+      </li>
+      <li class="proc-item fi fi-d2">
+        <span class="proc-n" aria-hidden="true">III</span>
+        <span class="proc-titulo">Diseño</span>
+        <span class="proc-desc">Construimos con atención al detalle. Cada decisión visual tiene una razón. Revisiones en cada etapa.</span>
+      </li>
+      <li class="proc-item fi fi-d3">
+        <span class="proc-n" aria-hidden="true">IV</span>
+        <span class="proc-titulo">Entrega</span>
+        <span class="proc-desc">Tu sitio en el aire en menos de tres semanas. Después del lanzamiento, seguimos disponibles.</span>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<!-- ═══ FAQ ════════════════════════════════════════════════════ -->
+<section class="faq" aria-labelledby="faq-label">
+  <div class="faq-inner">
+    <p class="faq-label fi" id="faq-label">Preguntas frecuentes</p>
+    <ul class="faq-lista fi-d1" role="list">
+
+      <li class="faq-item fi">
+        <button class="faq-btn" aria-expanded="false">
+          <span class="faq-q">¿Cuánto tarda un proyecto?</span>
+          <span class="faq-icono" aria-hidden="true"></span>
+        </button>
+        <div class="faq-resp" role="region">
+          <p class="faq-resp-inner">Un sitio web completo está listo en menos de tres semanas desde que acordamos el contenido. Una landing puede salir antes. Siempre definimos plazos reales antes de arrancar.</p>
+        </div>
+      </li>
+
+      <li class="faq-item fi fi-d1">
+        <button class="faq-btn" aria-expanded="false">
+          <span class="faq-q">¿Cómo funciona el mantenimiento?</span>
+          <span class="faq-icono" aria-hidden="true"></span>
+        </button>
+        <div class="faq-resp" role="region">
+          <p class="faq-resp-inner">Después de la entrega, el sitio queda bajo un plan mensual que incluye todos los cambios y actualizaciones que necesités: textos, fotos, secciones nuevas. Lo pedís y lo hacemos nosotros.</p>
+        </div>
+      </li>
+
+      <li class="faq-item fi fi-d2">
+        <button class="faq-btn" aria-expanded="false">
+          <span class="faq-q">¿El dominio y el hosting están incluidos?</span>
+          <span class="faq-icono" aria-hidden="true"></span>
+        </button>
+        <div class="faq-resp" role="region">
+          <p class="faq-resp-inner">Sí. Nos encargamos de todo eso para que no tengas que lidiar con tecnicismos. Tu sitio queda andando desde el primer día sin que tengas que contratar nada por separado.</p>
+        </div>
+      </li>
+
+      <li class="faq-item fi fi-d3">
+        <button class="faq-btn" aria-expanded="false">
+          <span class="faq-q">¿Trabajan con cualquier tipo de proyecto?</span>
+          <span class="faq-icono" aria-hidden="true"></span>
+        </button>
+        <div class="faq-resp" role="region">
+          <p class="faq-resp-inner">Trabajamos con profesionales independientes, emprendedores y proyectos con identidad propia. Antes de cotizar, hablamos para ver si tiene sentido trabajar juntos.</p>
+        </div>
+      </li>
+
+      <li class="faq-item fi fi-d3">
+        <button class="faq-btn" aria-expanded="false">
+          <span class="faq-q">¿Cómo es el presupuesto?</span>
+          <span class="faq-icono" aria-hidden="true"></span>
+        </button>
+        <div class="faq-resp" role="region">
+          <p class="faq-resp-inner">Cada proyecto tiene su precio según el alcance. Después de la primera charla, mandamos una propuesta clara con todo lo que incluye, sin letra chica.</p>
+        </div>
+      </li>
+
+    </ul>
+  </div>
+</section>
+
+<!-- ═══ CONTACTO ═══════════════════════════════════════════════ -->
+<section class="contacto" id="contacto" aria-labelledby="cont-h2">
+
+  <!-- El río desemboca aquí -->
+  <svg class="rio-desemboca" viewBox="0 0 1440 600"
+       preserveAspectRatio="xMidYMax slice"
+       xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <path d="M-100 0 C300 80 600 -40 900 60 C1100 120 1300 30 1540 80 L1540 600 L-100 600 Z"
+          fill="#4F7C74" opacity=".12"/>
+    <path d="M-100 100 C200 180 500 80 800 150 C1000 200 1250 110 1540 160 L1540 600 L-100 600 Z"
+          fill="#4F7C74" opacity=".08"/>
+    <path d="M -200 200 C 200 160, 450 220, 700 185 C 950 150, 1200 195, 1540 170"
+          stroke="#4F7C74" stroke-width="1" fill="none" opacity=".4"/>
+    <path d="M -200 240 C 180 200, 430 260, 680 225 C 930 190, 1200 235, 1540 210"
+          stroke="#4F7C74" stroke-width=".6" fill="none" opacity=".25"/>
+  </svg>
+
+  <div class="contacto-inner">
+    <p class="contacto-label fi">Contacto</p>
+    <h2 class="contacto-titulo fi fi-d1" id="cont-h2">
+      ¿Tenés algo<br>en <em>mente?</em>
+    </h2>
+    <div class="contacto-links fi fi-d2">
+      <a href="mailto:riberaestudioarg@gmail.com" class="contacto-email">
+        riberaestudioarg@gmail.com <span aria-hidden="true">→</span>
+      </a>
+      <a href="https://instagram.com/riberastudio_"
+         class="contacto-ig" target="_blank" rel="noopener">
+        @riberastudio_
+      </a>
+    </div>
+    <p class="contacto-nota fi fi-d3">Sin compromisos · Solo una charla</p>
+  </div>
+</section>
+
+</main>
+
+<!-- ═══ FOOTER ═════════════════════════════════════════════════ -->
+<footer role="contentinfo">
+  <div class="footer-inner">
+    <div class="footer-logo" aria-label="Riberastudio">
+      <svg viewBox="0 0 884 163" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <text font-family="Georgia,'Times New Roman',serif" font-weight="700"
+              font-size="149" fill="#FAFAF7" x="0" y="128">Ribera</text>
+        <text font-family="Georgia,'Times New Roman',serif" font-weight="400"
+              font-style="italic" font-size="149" fill="#FAFAF7" x="477" y="128">studio</text>
+      </svg>
+    </div>
+    <p class="footer-copy">© 2025 Riberastudio. Litoral, Argentina.</p>
+  </div>
+</footer>
+
+<script>
+/* ── NAV scroll ──────────────────────────────────────── */
+const nav = document.getElementById('nav');
+const hero = document.getElementById('hero');
+
+const navObs = new IntersectionObserver(
+  ([e]) => {
+    nav.classList.toggle('scrolled', !e.isIntersecting);
+    nav.classList.toggle('hero-zone', e.isIntersecting);
+  },
+  { threshold: 0.05 }
+);
+navObs.observe(hero);
+
+/* ── Fade-in al scroll ───────────────────────────────── */
+const fiEls = document.querySelectorAll('.fi');
+const fiObs = new IntersectionObserver(
+  (entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('v');
+        fiObs.unobserve(e.target);
+      }
+    });
+  },
+  { threshold: 0.08 }
+);
+fiEls.forEach(el => fiObs.observe(el));
+
+/* ── Parallax muy suave en hero ──────────────────────── */
+const heroP = document.getElementById('heroParallax');
+let ticking = false;
+window.addEventListener('scroll', () => {
+  if (!ticking) {
+    requestAnimationFrame(() => {
+      const y = window.scrollY;
+      if (y < window.innerHeight) {
+        heroP.style.transform = `translateY(${y * 0.12}px)`;
+      }
+      ticking = false;
+    });
+    ticking = true;
+  }
+}, { passive: true });
+
+/* ── Micro-movimiento con mouse en hero ──────────────── */
+let mx = 0, my = 0, cx = 0, cy = 0;
+hero.addEventListener('mousemove', e => {
+  const r = hero.getBoundingClientRect();
+  mx = ((e.clientX - r.left) / r.width  - .5) * 10;
+  my = ((e.clientY - r.top)  / r.height - .5) * 6;
+});
+hero.addEventListener('mouseleave', () => { mx = 0; my = 0; });
+
+(function lerp() {
+  cx += (mx - cx) * .06;
+  cy += (my - cy) * .06;
+  heroP.style.transform =
+    `translate(${cx}px, ${cy + window.scrollY * .12}px)`;
+  requestAnimationFrame(lerp);
+})();
+
+/* ── FAQ acordeón ────────────────────────────────────── */
+document.querySelectorAll('.faq-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const item = btn.closest('.faq-item');
+    const open = item.classList.contains('open');
+
+    // Cerrar todos
+    document.querySelectorAll('.faq-item.open').forEach(i => {
+      i.classList.remove('open');
+      i.querySelector('.faq-btn').setAttribute('aria-expanded', 'false');
+    });
+
+    if (!open) {
+      item.classList.add('open');
+      btn.setAttribute('aria-expanded', 'true');
+    }
+  });
+});
+</script>
+
+</body>
+</html>
